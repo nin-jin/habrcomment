@@ -7,6 +7,8 @@ $my_habrcomment $mol_page
 			title <= title \
 			hint \Оригинальная статья
 		<= Lights $mol_lights_toggle
+		<= Sources $mol_link_source
+			uri \https://github.com/nin-jin/habrcomment
 		<= Search $mol_search
 			query?val <=> search?val \
 			submit?event <=> search_next?event null
