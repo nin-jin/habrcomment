@@ -1,6 +1,6 @@
 namespace $ {
 
-	const { rem } = $mol_style_unit
+	const { rem, px } = $mol_style_unit
 	
 	$mol_style_define( $my_habrcomment_comment , {
 
@@ -26,7 +26,7 @@ namespace $ {
 
 		Expand: {
 			position: 'absolute',
-			margin: { left : rem(-2.5) },
+			margin: { left : rem(-2.25) },
 			zIndex: 1,
 		},
 		
@@ -50,7 +50,18 @@ namespace $ {
 		},
 		
 		Replies: {
-			padding: { left : rem(1.5) },
+			padding: { left : rem(.75) },
+			margin: { left : rem(.75) },
+			box: {
+				shadow: [{
+					inset: true,
+					x: px(-1),
+					y: 0,
+					blur: 0,
+					spread: 0,
+					color: $mol_theme.line,
+				}],
+			},
 		},
 		
 	} )
