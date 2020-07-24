@@ -2290,11 +2290,11 @@ declare namespace $ {
         Orig(): $$.$mol_link_iconed;
         orig_uri(): string;
         title(): string;
+        tools(): readonly any[];
         Lights(): $$.$mol_lights_toggle;
         Sources(): $mol_link_source;
         Search(): $$.$mol_search;
         search(val?: any, force?: $mol_mem_force): any;
-        search_next(event?: any, force?: $mol_mem_force): any;
         body(): readonly any[];
         Content(): $$.$mol_list;
         Article(): $$.$mol_html_view;
@@ -2447,8 +2447,8 @@ declare namespace $.$$ {
     class $my_habrcomment extends $.$my_habrcomment {
         article_id(): number;
         article_data(): Readonly<{
-            textHtml: string;
             titleHtml: string;
+            textHtml: string;
         }>;
         article_content(): string;
         title(): string;

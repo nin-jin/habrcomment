@@ -7486,7 +7486,7 @@ var $;
             });
         }
         head() {
-            return [this.Orig(), this.Lights(), this.Sources(), this.Search()];
+            return [this.Orig(), this.Tools()];
         }
         Orig() {
             return ((obj) => {
@@ -7502,6 +7502,9 @@ var $;
         title() {
             return "";
         }
+        tools() {
+            return [this.Lights(), this.Sources(), this.Search()];
+        }
         Lights() {
             return ((obj) => {
                 return obj;
@@ -7516,15 +7519,11 @@ var $;
         Search() {
             return ((obj) => {
                 obj.query = (val) => this.search(val);
-                obj.submit = (event) => this.search_next(event);
                 return obj;
             })(new this.$.$mol_search());
         }
         search(val, force) {
             return (val !== void 0) ? val : "";
-        }
-        search_next(event, force) {
-            return (event !== void 0) ? event : null;
         }
         body() {
             return [this.Content()];
@@ -7638,9 +7637,6 @@ var $;
     __decorate([
         $.$mol_mem
     ], $my_habrcomment.prototype, "search", null);
-    __decorate([
-        $.$mol_mem
-    ], $my_habrcomment.prototype, "search_next", null);
     __decorate([
         $.$mol_mem
     ], $my_habrcomment.prototype, "Content", null);
@@ -8145,27 +8141,16 @@ var $;
             comments: Dict(Comment),
             threads: List(Int),
         });
-        const Flow = Rec({
-            alias: Str,
-            id: Str,
-            title: Str,
-        });
-        const Hub = Rec({
-            alias: Str,
-            id: Str,
-            title: Str,
-            type: Str,
-        });
         const Article = Rec({
-            textHtml: Str,
             titleHtml: Str,
+            textHtml: Str,
         });
         class $my_habrcomment extends $.$my_habrcomment {
             article_id() {
                 return Int(Number(this.$.$mol_state_arg.value('article')));
             }
             article_data() {
-                const uri = `//m.habr.com/kek/v2/articles/${this.article_id()}`;
+                const uri = `https://m.habr.com/kek/v2/articles/${this.article_id()}`;
                 const data = Article(this.$.$mol_fetch.json(uri));
                 return data;
             }
@@ -8179,7 +8164,7 @@ var $;
                 return `https://habr.com/post/${this.article_id()}`;
             }
             comments_data() {
-                const uri = `//m.habr.com/kek/v2/articles/${this.article_id()}/comments/`;
+                const uri = `https://m.habr.com/kek/v2/articles/${this.article_id()}/comments/`;
                 const data = Comments_response(this.$.$mol_fetch.json(uri));
                 return data;
             }
