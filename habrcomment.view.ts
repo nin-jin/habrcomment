@@ -80,9 +80,9 @@ namespace $.$$ {
 			return this.article_data().textHtml
 		}
 
-		// title() {
-		// 	return this.article_data().titleHtml
-		// }
+		title() {
+			return this.article_data().titleHtml
+		}
 
 		orig_uri() {
 			return `https://habr.com/post/${ this.article_id() }`
