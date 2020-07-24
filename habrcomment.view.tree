@@ -1,0 +1,36 @@
+$my_habrcomment $mol_page
+	attr *
+		tabindex 0
+	head /
+		<= Orig $mol_link_iconed
+			uri <= orig_uri \
+			title <= title \
+			hint \Оригинальная статья
+		<= Lights $mol_lights_toggle
+		<= Search $mol_search
+			query?val <=> search?val \
+			submit?event <=> search_next?event null
+	body /
+		<= Content $mol_list rows /
+			<= Article $mol_html_view
+				html <= article_content \
+				highlight <= search
+				image_uri!node <= image_uri!node \
+			<= Comments $mol_list
+				rows <= root_comments /$mol_view
+				Empty <= Comments_empty $mol_view sub / \Без комментариев
+	Comment!id $my_habrcomment_comment
+		time <= comment_time!id $mol_time_moment
+		user_name <= comment_user!id \
+		user_avatar <= comment_avatar!id \
+		message <= comment_message!id \
+		replies <= comments!id /$mol_view
+		expanded?val <=> comment_expanded!id?val true
+		expandable <= comment_expandable!id false
+		search <= search
+		image_uri!node <= image_uri!node \
+	plugins /
+		<= Theme $mol_theme_auto
+		<= Search_key $mol_hotkey
+			mod_ctrl true
+			key * F?event <=> search_focus?event null

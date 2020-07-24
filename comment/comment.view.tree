@@ -1,0 +1,27 @@
+$my_habrcomment_comment $mol_list
+	time $mol_time_moment
+	expandable false
+	sub /
+		<= Expand $mol_check_expand
+			checked?val <=> expanded?val true
+		<= Head $mol_view
+			sub /
+				<= User_link $mol_link
+					uri <= user_link \
+					sub /
+						<= User_avatar $mol_image
+							title \
+							uri <= user_avatar \
+						<= User_name $mol_dimmer
+							needle <= search \
+							haystack <= user_name \ 
+				<= Time $mol_view
+					sub /
+						<= time_string \
+		<= Message $mol_html_view
+			highlight <= search \
+			html <= message \
+			image_uri!node <= image_uri!node \
+			minimal_height 60
+		<= Replies $mol_list
+			rows <= replies /$mol_view

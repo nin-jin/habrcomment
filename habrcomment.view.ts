@@ -1,0 +1,205 @@
+namespace $.$$ {
+
+	const Int = $mol_data_integer
+	const Bool = $mol_data_boolean
+	const Str = $mol_data_string
+	const Maybe = $mol_data_nullable
+	const Const = $mol_data_const
+	const Rec = $mol_data_record
+	const List = $mol_data_array
+	const Dict = $mol_data_dict
+
+	const Moment = $mol_data_pipe( Str , $mol_time_moment )
+
+	const Person = Rec({
+		id: Int,
+		login: Str,
+		fullname: Maybe( Str ),
+		avatar: Str,
+		avatarUrl: Str,
+		speciality: Maybe( Str ),
+	})
+
+	const Comment =  Rec({
+		id: Int,
+		author: Maybe( Person ),
+		children: List( Int ),
+		isAuthor: Maybe( Bool ),
+		isCanEdit: Maybe( Bool ),
+		isFavorite: Maybe( Bool ),
+		isNew: Maybe( Bool ),
+		isPostAuthor: Maybe( Bool ),
+		isSuspended: Maybe( Bool ),
+		level: Int,
+		message: Str,
+		parentId: Int,
+		score: Maybe( Int ),
+		timeChanged: Maybe( Moment ),
+		timeEditAllowedTill: Maybe( Moment ),
+		timePublished: Maybe( Moment ),
+		votesCount: Maybe( Int ),
+	})
+	
+	const Comments_response = Rec({
+		comments: Dict( Comment ),
+		threads: List( Int ),
+	})
+
+	const Flow = Rec({
+		alias: Str,
+		id: Str,
+		title: Str,
+	})
+
+	const Hub = Rec({
+		alias: Str,
+		id: Str,
+		title: Str,
+		type: Str,
+	})
+
+	const Article = Rec({
+		textHtml: Str,
+		titleHtml: Str,
+	})
+	
+	export class $my_habrcomment extends $.$my_habrcomment {
+
+		article_id() {
+			return Int( Number( this.$.$mol_state_arg.value( 'article' ) ) )
+		}
+
+		@ $mol_mem
+		article_data() {
+			const uri = `//m.habr.com/kek/v2/articles/${ this.article_id() }`
+			const data = Article( this.$.$mol_fetch.json( uri ) )
+			return data
+		}
+
+		article_content() {
+			return this.article_data().textHtml
+		}
+
+		// title() {
+		// 	return this.article_data().titleHtml
+		// }
+
+		orig_uri() {
+			return `https://habr.com/post/${ this.article_id() }`
+		}
+
+		@ $mol_mem
+		comments_data() {
+			const uri = `//m.habr.com/kek/v2/articles/${ this.article_id() }/comments/`
+			const data = Comments_response( this.$.$mol_fetch.json( uri ) )
+			return data
+		}
+
+		comment_message( id : number ) {
+			return this.comments_data().comments[ id ].message
+		}
+
+		comment_avatar( id : number ) {
+			
+			let uri = this.comments_data().comments[ id ].author?.avatar ?? ''
+			
+			if( uri === '//habr.com/images/stub-user-middle.gif' ) uri = ''
+			if( !uri ) uri = '//habrastorage.org/getpro/habr/avatars/6c6/a92/518/6c6a925180e705e46c413d93f85c434b.png'
+			
+			return uri
+		}
+
+		comment_user( id : number ) {
+			return this.comments_data().comments[ id ].author?.login ?? 'ufo'
+		}
+
+		comment_time( id : number ) {
+			return this.comments_data().comments[ id ].timePublished as $mol_time_moment
+				?? new $mol_time_moment
+		}
+
+		@ $mol_mem_key
+		comments( id : number ) : $my_habrcomment_comment[] {
+			return this.comments_visible( id ).map( id => this.Comment( id ) )
+		}
+
+		@ $mol_mem_key
+		comments_all( id : number ) : readonly number[] {
+			if( id === 0 ) return this.comments_data().threads
+			return this.comments_data().comments[ id ].children
+		}
+
+		@ $mol_mem_key
+		comments_filtered( id : number ) : number[] {
+			return this.comments_all( id ).filter( id => this.comment_filtered( id ) )
+		}
+
+		@ $mol_mem_key
+		comments_visible( id : number ) : readonly number[] {
+
+			const all = this.comments_all( id )
+			
+			if( this.comment_expanded( id ) ) return all
+			
+			return this.comments_filtered( id )
+
+		}
+
+		@ $mol_mem_key
+		comment_filtered( id : number ) : boolean {
+			if( this.comments_filtered( id ).length > 0 ) return true
+			return this.comment_match( id )
+		}
+
+		@ $mol_mem_key
+		comment_expanded( id : number , next? : boolean ) : boolean {
+			if( next !== undefined ) return next
+			return this.search().length === 0
+		}
+
+		@ $mol_mem_key
+		comment_expandable( id : number ) : boolean {
+			return this.comments_all( id ).length > this.comments_filtered( id ).length 
+		}
+
+		@ $mol_mem_key
+		comment_match( id : number ) {
+		
+			const query = this.search().toLowerCase()
+			if( !query ) return false
+
+			const comment = this.comments_data().comments[ id ]
+			
+			const text = comment.message.replace( /<.*?>/ , '' ).toLowerCase()
+			if( text.indexOf( query ) >= 0 ) return true
+
+			if( comment.author?.login && ( comment.author.login?.toLowerCase().indexOf( query ) >= 0 ) ) return true
+
+			return false
+		}
+
+		@ $mol_mem
+		root_comments() {
+			return this.comments( 0 )
+		}
+
+		search_focus( event : Event ) {
+			this.Search().Suggest().Filter().focused( true )
+			event.preventDefault()
+		}
+
+		search( next? : string ) {
+			return this.$.$mol_state_arg.value( 'search' , next ) ?? ''
+		}
+
+		search_next() {
+			console.log('next')
+		}
+
+		image_uri( node : HTMLImageElement ) {
+			return node.dataset.src || node.src || 'about:blank'
+		}
+
+	}
+
+}
