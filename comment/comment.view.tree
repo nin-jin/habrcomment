@@ -2,10 +2,10 @@ $my_habrcomment_comment $mol_list
 	time $mol_time_moment
 	expandable false
 	sub /
-		<= Expand $mol_check_expand
-			checked?val <=> expanded?val true
 		<= Head $mol_view
-			sub /
+			sub <= head /
+				<= Expand $mol_check_expand
+					checked?val <=> expanded?val true
 				<= User_link $mol_link
 					uri <= user_link \
 					sub /
@@ -22,6 +22,6 @@ $my_habrcomment_comment $mol_list
 			highlight <= search \
 			html <= message \
 			image_uri!node <= image_uri!node \
-			minimal_height 60
+			minimal_height 36
 		<= Replies $mol_list
 			rows <= replies /$mol_view

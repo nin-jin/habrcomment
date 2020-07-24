@@ -10,12 +10,11 @@ namespace $.$$ {
 			return this.time().toString( 'YYYY-MM-DD hh:mm' )
 		}
 
-		sub() {
+		head() {
 			return [
 				... this.expandable() ? [ this.Expand() ] : [],
-				this.Head(),
-				this.Message(),
-				this.Replies(),
+				this.User_link(),
+				this.Time(),
 			]
 		}
 

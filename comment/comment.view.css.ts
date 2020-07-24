@@ -26,7 +26,7 @@ namespace $ {
 
 		Expand: {
 			position: 'absolute',
-			margin: [ rem(.75) , rem(-.5) ],
+			margin: { left : rem(-2.5) },
 			zIndex: 1,
 		},
 		
