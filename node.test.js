@@ -7384,7 +7384,7 @@ var $;
             box: {
                 shadow: [{
                         inset: true,
-                        x: px(-1),
+                        x: px(1),
                         y: 0,
                         blur: 0,
                         spread: 0,
