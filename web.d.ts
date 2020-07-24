@@ -2,6 +2,21 @@ declare namespace $ { }
 export = $;
 
 declare namespace $ {
+    function $mol_fail(error: any): never;
+}
+
+declare namespace $ {
+    function $mol_fail_hidden(error: any): never;
+}
+
+declare namespace $ {
+    function $mol_offline(uri?: string): void;
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
     class $mol_decor<Value> {
         readonly value: Value;
         constructor(value: Value);
@@ -77,14 +92,6 @@ declare namespace $ {
         destructor(): void;
     };
     function $mol_owning_catch<Owner, Having>(owner: Owner, having: Having): boolean;
-}
-
-declare namespace $ {
-    function $mol_fail(error: any): never;
-}
-
-declare namespace $ {
-    function $mol_fail_hidden(error: any): never;
 }
 
 declare namespace $ {
@@ -1043,7 +1050,7 @@ declare namespace $.$$ {
         tab_index(): number;
         error(): string;
         hint_or_error(): string;
-        sub_visible(): (string | number | boolean | $mol_view | Node | $mol_speck)[];
+        sub_visible(): (string | number | boolean | Node | $mol_view | $mol_speck)[];
     }
 }
 
