@@ -45,22 +45,9 @@ namespace $.$$ {
 		threads: List( Int ),
 	})
 
-	const Flow = Rec({
-		alias: Str,
-		id: Str,
-		title: Str,
-	})
-
-	const Hub = Rec({
-		alias: Str,
-		id: Str,
-		title: Str,
-		type: Str,
-	})
-
 	const Article = Rec({
-		textHtml: Str,
 		titleHtml: Str,
+		textHtml: Str,
 	})
 	
 	export class $my_habrcomment extends $.$my_habrcomment {
@@ -71,7 +58,7 @@ namespace $.$$ {
 
 		@ $mol_mem
 		article_data() {
-			const uri = `//m.habr.com/kek/v2/articles/${ this.article_id() }`
+			const uri = `https://m.habr.com/kek/v2/articles/${ this.article_id() }`
 			const data = Article( this.$.$mol_fetch.json( uri ) )
 			return data
 		}
@@ -90,7 +77,7 @@ namespace $.$$ {
 
 		@ $mol_mem
 		comments_data() {
-			const uri = `//m.habr.com/kek/v2/articles/${ this.article_id() }/comments/`
+			const uri = `https://m.habr.com/kek/v2/articles/${ this.article_id() }/comments/`
 			const data = Comments_response( this.$.$mol_fetch.json( uri ) )
 			return data
 		}
