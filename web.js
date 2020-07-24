@@ -4570,6 +4570,41 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $mol_icon_github_circle extends $.$mol_icon {
+        path() {
+            return "M12,2C6.48,2 2,6.48 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12C22,6.48 17.52,2 12,2Z";
+        }
+    }
+    $.$mol_icon_github_circle = $mol_icon_github_circle;
+})($ || ($ = {}));
+//circle.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_link_source extends $.$mol_link {
+        hint() {
+            return this.$.$mol_locale.text("$mol_link_source_hint");
+        }
+        sub() {
+            return [this.Icon()];
+        }
+        Icon() {
+            return ((obj) => {
+                return obj;
+            })(new this.$.$mol_icon_github_circle());
+        }
+    }
+    __decorate([
+        $.$mol_mem
+    ], $mol_link_source.prototype, "Icon", null);
+    $.$mol_link_source = $mol_link_source;
+})($ || ($ = {}));
+//source.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_bar extends $.$mol_view {
     }
     $.$mol_bar = $mol_bar;
@@ -7049,7 +7084,16 @@ var $;
             return false;
         }
         sub() {
-            return [this.Expand(), this.Head(), this.Message(), this.Replies()];
+            return [this.Head(), this.Message(), this.Replies()];
+        }
+        Head() {
+            return ((obj) => {
+                obj.sub = () => this.head();
+                return obj;
+            })(new this.$.$mol_view());
+        }
+        head() {
+            return [this.Expand(), this.User_link(), this.Time()];
         }
         Expand() {
             return ((obj) => {
@@ -7059,12 +7103,6 @@ var $;
         }
         expanded(val, force) {
             return (val !== void 0) ? val : true;
-        }
-        Head() {
-            return ((obj) => {
-                obj.sub = () => [this.User_link(), this.Time()];
-                return obj;
-            })(new this.$.$mol_view());
         }
         User_link() {
             return ((obj) => {
@@ -7113,7 +7151,7 @@ var $;
                 obj.highlight = () => this.search();
                 obj.html = () => this.message();
                 obj.image_uri = (node) => this.image_uri(node);
-                obj.minimal_height = () => 60;
+                obj.minimal_height = () => 36;
                 return obj;
             })(new this.$.$mol_html_view());
         }
@@ -7138,13 +7176,13 @@ var $;
     ], $my_habrcomment_comment.prototype, "time", null);
     __decorate([
         $.$mol_mem
+    ], $my_habrcomment_comment.prototype, "Head", null);
+    __decorate([
+        $.$mol_mem
     ], $my_habrcomment_comment.prototype, "Expand", null);
     __decorate([
         $.$mol_mem
     ], $my_habrcomment_comment.prototype, "expanded", null);
-    __decorate([
-        $.$mol_mem
-    ], $my_habrcomment_comment.prototype, "Head", null);
     __decorate([
         $.$mol_mem
     ], $my_habrcomment_comment.prototype, "User_link", null);
@@ -7189,7 +7227,7 @@ var $;
         },
         Expand: {
             position: 'absolute',
-            margin: [rem(.75), rem(-.5)],
+            margin: { left: rem(-2.5) },
             zIndex: 1,
         },
         Head: {
@@ -7228,12 +7266,11 @@ var $;
             time_string() {
                 return this.time().toString('YYYY-MM-DD hh:mm');
             }
-            sub() {
+            head() {
                 return [
                     ...this.expandable() ? [this.Expand()] : [],
-                    this.Head(),
-                    this.Message(),
-                    this.Replies(),
+                    this.User_link(),
+                    this.Time(),
                 ];
             }
         }
@@ -7284,7 +7321,7 @@ var $;
             });
         }
         head() {
-            return [this.Orig(), this.Lights(), this.Search()];
+            return [this.Orig(), this.Lights(), this.Sources(), this.Search()];
         }
         Orig() {
             return ((obj) => {
@@ -7304,6 +7341,12 @@ var $;
             return ((obj) => {
                 return obj;
             })(new this.$.$mol_lights_toggle());
+        }
+        Sources() {
+            return ((obj) => {
+                obj.uri = () => "https://github.com/nin-jin/habrcomment";
+                return obj;
+            })(new this.$.$mol_link_source());
         }
         Search() {
             return ((obj) => {
@@ -7421,6 +7464,9 @@ var $;
     __decorate([
         $.$mol_mem
     ], $my_habrcomment.prototype, "Lights", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_habrcomment.prototype, "Sources", null);
     __decorate([
         $.$mol_mem
     ], $my_habrcomment.prototype, "Search", null);

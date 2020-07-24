@@ -1489,6 +1489,20 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $mol_icon_github_circle extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_link_source extends $mol_link {
+        hint(): string;
+        sub(): readonly any[];
+        Icon(): $mol_icon_github_circle;
+    }
+}
+
+declare namespace $ {
     class $mol_bar extends $mol_view {
     }
 }
@@ -2186,9 +2200,10 @@ declare namespace $ {
         time(): $mol_time_moment;
         expandable(): boolean;
         sub(): readonly any[];
+        Head(): $mol_view;
+        head(): readonly any[];
         Expand(): $$.$mol_check_expand;
         expanded(val?: any, force?: $mol_mem_force): any;
-        Head(): $mol_view;
         User_link(): $$.$mol_link;
         user_link(): string;
         User_avatar(): $mol_image;
@@ -2213,7 +2228,7 @@ declare namespace $.$$ {
     class $my_habrcomment_comment extends $.$my_habrcomment_comment {
         user_link(): string;
         time_string(): string;
-        sub(): ($mol_view | $mol_check_expand)[];
+        head(): ($mol_view | $mol_check_expand)[];
     }
 }
 
@@ -2242,6 +2257,7 @@ declare namespace $ {
         orig_uri(): string;
         title(): string;
         Lights(): $$.$mol_lights_toggle;
+        Sources(): $mol_link_source;
         Search(): $$.$mol_search;
         search(val?: any, force?: $mol_mem_force): any;
         search_next(event?: any, force?: $mol_mem_force): any;
