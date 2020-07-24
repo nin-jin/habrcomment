@@ -13,7 +13,6 @@ namespace $ {
 		
 		User_link: {
 			margin: [ 0 , rem(-.75) ],
-			alignItems: 'baseline',
 		},
 
 		User_avatar: {
