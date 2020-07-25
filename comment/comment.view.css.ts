@@ -51,7 +51,7 @@ namespace $ {
 		
 		Replies: {
 			padding: { left : rem(.75) },
-			margin: { left : rem(.75) },
+			margin: { left : rem(1.5) },
 			box: {
 				shadow: [{
 					inset: true,
