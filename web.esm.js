@@ -6398,6 +6398,13 @@ var $;
             },
             padding: rem(.75),
         },
+        List: {
+            display: 'block',
+            flex: {
+                wrap: 'wrap',
+            },
+            padding: rem(.75),
+        },
         Quote: {
             display: 'block',
             flex: {
@@ -6499,8 +6506,8 @@ var $;
                     case 'P':
                     case 'LI':
                     case 'PRE':
-                        return [this.Paragraph(node)];
                     case 'DIV':
+                        return [this.Paragraph(node)];
                     case 'UL':
                     case 'OL':
                         return [this.List(node)];
@@ -7202,6 +7209,7 @@ var $;
                 obj.highlight = () => this.search();
                 obj.html = () => this.message();
                 obj.image_uri = (node) => this.image_uri(node);
+                obj.minimal_height = () => 60;
                 return obj;
             })(new this.$.$mol_html_view());
         }
@@ -7299,7 +7307,7 @@ var $;
         },
         Replies: {
             padding: { left: rem(.75) },
-            margin: { left: rem(.75) },
+            margin: { left: rem(1.5) },
             box: {
                 shadow: [{
                         inset: true,

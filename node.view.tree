@@ -401,6 +401,7 @@ $my_habrcomment_comment $mol_list
 			highlight <= search \
 			html <= message \
 			image_uri!node <= image_uri!node \
+			minimal_height 60
 		<= Replies $mol_list
 			rows <= replies /$mol_view
 
