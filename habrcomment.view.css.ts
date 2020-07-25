@@ -27,10 +27,6 @@ namespace $ {
 			padding: rem(1.5),
 		},
 		
-		flex : {
-			direction : 'column',
-		},
-		
 	} )
 
 }
