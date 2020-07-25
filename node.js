@@ -8096,9 +8096,6 @@ var $;
         Comments_empty: {
             padding: rem(1.5),
         },
-        flex: {
-            direction: 'column',
-        },
     });
 })($ || ($ = {}));
 //habrcomment.view.css.js.map
