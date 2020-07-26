@@ -7306,6 +7306,7 @@ var $;
                 obj.highlight = () => this.search();
                 obj.html = () => this.message();
                 obj.image_uri = (node) => this.image_uri(node);
+                obj.minimal_height = () => 60;
                 return obj;
             })(new this.$.$mol_html_view());
         }
