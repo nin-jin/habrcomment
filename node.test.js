@@ -8198,10 +8198,12 @@ var $;
                 return this.comments_all(id).filter(id => this.comment_filtered(id));
             }
             comments_visible(id) {
-                const all = this.comments_all(id);
-                if (this.comment_expanded(id))
-                    return all;
-                return this.comments_filtered(id);
+                if (this.comment_expanded(id)) {
+                    return this.comments_all(id);
+                }
+                else {
+                    return this.comments_filtered(id);
+                }
             }
             comment_filtered(id) {
                 if (this.comments_filtered(id).length > 0)
