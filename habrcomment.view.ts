@@ -124,11 +124,11 @@ namespace $.$$ {
 		@ $mol_mem_key
 		comments_visible( id : number ) : readonly number[] {
 
-			const all = this.comments_all( id )
-			
-			if( this.comment_expanded( id ) ) return all
-			
-			return this.comments_filtered( id )
+			if( this.comment_expanded( id ) ) {
+				return this.comments_all( id )
+			} else {
+				return this.comments_filtered( id )
+			}
 
 		}
 
