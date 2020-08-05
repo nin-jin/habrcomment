@@ -2522,21 +2522,6 @@ var $;
 //nullable.test.js.map
 ;
 "use strict";
-var $;
-(function ($) {
-    $.$mol_test({
-        'is same number'() {
-            $.$mol_data_const(Number.NaN)(Number.NaN);
-        },
-        'is different number'() {
-            const Five = $.$mol_data_const(5);
-            $.$mol_assert_fail(() => Five(6), '6 is not 5');
-        },
-    });
-})($ || ($ = {}));
-//const.test.js.map
-;
-"use strict";
 //merge.test.js.map
 ;
 "use strict";

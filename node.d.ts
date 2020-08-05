@@ -2345,13 +2345,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_data_const<Val extends {} | string | number>(ref: Val): ((val: Val) => Val) & {
-        config: Val;
-        Value: Val;
-    };
-}
-
-declare namespace $ {
     type $mol_type_merge<Intersection> = Intersection extends (...a: any[]) => any ? Intersection : Intersection extends new (...a: any[]) => any ? Intersection : Intersection extends object ? {
         [Key in keyof Intersection]: $mol_type_merge<Intersection[Key]>;
     } : Intersection;
@@ -2457,11 +2450,11 @@ declare namespace $.$$ {
                 [x: string]: {
                     readonly id: number;
                     readonly author: {
-                        readonly id: number;
+                        readonly alias: string;
+                        readonly id: string;
                         readonly login: string;
                         readonly fullname: string | null;
-                        readonly avatar: string;
-                        readonly avatarUrl: string;
+                        readonly avatarUrl: string | null;
                         readonly speciality: string | null;
                     } | null;
                     readonly children: readonly number[];

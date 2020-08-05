@@ -7556,20 +7556,6 @@ var $;
 //nullable.js.map
 ;
 "use strict";
-var $;
-(function ($) {
-    function $mol_data_const(ref) {
-        return $.$mol_data_setup((val) => {
-            if (Object.is(val, ref))
-                return ref;
-            return $.$mol_fail(new $.$mol_data_error(`${val} is not ${ref}`));
-        }, ref);
-    }
-    $.$mol_data_const = $mol_data_const;
-})($ || ($ = {}));
-//const.js.map
-;
-"use strict";
 //merge.js.map
 ;
 "use strict";
@@ -7711,17 +7697,16 @@ var $;
         const Bool = $.$mol_data_boolean;
         const Str = $.$mol_data_string;
         const Maybe = $.$mol_data_nullable;
-        const Const = $.$mol_data_const;
         const Rec = $.$mol_data_record;
         const List = $.$mol_data_array;
         const Dict = $.$mol_data_dict;
         const Moment = $.$mol_data_pipe(Str, $.$mol_time_moment);
         const Person = Rec({
-            id: Int,
+            alias: Str,
+            id: Str,
             login: Str,
             fullname: Maybe(Str),
-            avatar: Str,
-            avatarUrl: Str,
+            avatarUrl: Maybe(Str),
             speciality: Maybe(Str),
         });
         const Comment = Rec({
@@ -7779,7 +7764,7 @@ var $;
             }
             comment_avatar(id) {
                 var _a, _b;
-                let uri = (_b = (_a = this.comments_data().comments[id].author) === null || _a === void 0 ? void 0 : _a.avatar) !== null && _b !== void 0 ? _b : '';
+                let uri = (_b = (_a = this.comments_data().comments[id].author) === null || _a === void 0 ? void 0 : _a.avatarUrl) !== null && _b !== void 0 ? _b : '';
                 if (uri === '//habr.com/images/stub-user-middle.gif')
                     uri = '';
                 if (!uri)
