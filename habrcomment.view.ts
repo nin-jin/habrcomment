@@ -4,7 +4,6 @@ namespace $.$$ {
 	const Bool = $mol_data_boolean
 	const Str = $mol_data_string
 	const Maybe = $mol_data_nullable
-	const Const = $mol_data_const
 	const Rec = $mol_data_record
 	const List = $mol_data_array
 	const Dict = $mol_data_dict
@@ -12,11 +11,11 @@ namespace $.$$ {
 	const Moment = $mol_data_pipe( Str , $mol_time_moment )
 
 	const Person = Rec({
-		id: Int,
+		alias: Str,
+		id: Str,
 		login: Str,
 		fullname: Maybe( Str ),
-		avatar: Str,
-		avatarUrl: Str,
+		avatarUrl: Maybe( Str ),
 		speciality: Maybe( Str ),
 	})
 
