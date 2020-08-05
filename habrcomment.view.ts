@@ -87,7 +87,7 @@ namespace $.$$ {
 
 		comment_avatar( id : number ) {
 			
-			let uri = this.comments_data().comments[ id ].author?.avatar ?? ''
+			let uri = this.comments_data().comments[ id ].author?.avatarUrl ?? ''
 			
 			if( uri === '//habr.com/images/stub-user-middle.gif' ) uri = ''
 			if( !uri ) uri = '//habrastorage.org/getpro/habr/avatars/6c6/a92/518/6c6a925180e705e46c413d93f85c434b.png'
