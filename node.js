@@ -8253,9 +8253,6 @@ var $;
         __decorate([
             $.$mol_mem_key
         ], $my_habrcomment.prototype, "comment_match", null);
-        __decorate([
-            $.$mol_mem
-        ], $my_habrcomment.prototype, "root_comments", null);
         $$.$my_habrcomment = $my_habrcomment;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
