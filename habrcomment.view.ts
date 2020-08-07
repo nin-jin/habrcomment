@@ -178,10 +178,6 @@ namespace $.$$ {
 			return this.$.$mol_state_arg.value( 'search' , next ) ?? ''
 		}
 
-		search_next() {
-			console.log('next')
-		}
-
 		image_uri( node : HTMLImageElement ) {
 			return node.dataset.src || node.src || 'about:blank'
 		}
