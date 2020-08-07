@@ -2913,7 +2913,6 @@ declare namespace $.$$ {
         root_comments(): $my_habrcomment_comment[];
         search_focus(event: Event): void;
         search(next?: string): string;
-        search_next(): void;
         image_uri(node: HTMLImageElement): string;
     }
 }

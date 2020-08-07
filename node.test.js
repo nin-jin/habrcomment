@@ -8212,9 +8212,6 @@ var $;
                 var _a;
                 return (_a = this.$.$mol_state_arg.value('search', next)) !== null && _a !== void 0 ? _a : '';
             }
-            search_next() {
-                console.log('next');
-            }
             image_uri(node) {
                 return node.dataset.src || node.src || 'about:blank';
             }
