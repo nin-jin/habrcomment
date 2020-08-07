@@ -164,7 +164,6 @@ namespace $.$$ {
 			return false
 		}
 
-		@ $mol_mem
 		root_comments() {
 			return this.comments( 0 )
 		}
