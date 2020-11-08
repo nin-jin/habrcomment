@@ -10,7 +10,7 @@ $mol_speck $mol_view
 
 $mol_button $mol_view
 	enabled true
-	minimal_height 40
+	minimal_height 32
 	click?event null
 	event_click?event null
 	event *
@@ -114,7 +114,7 @@ $mol_icon $mol_svg_root
 $mol_icon_chevron $mol_icon path \M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z
 
 $mol_check_expand $mol_check
-	minimal_height 40
+	minimal_height 32
 	Icon $mol_icon_chevron
 	level 0
 	style *
@@ -305,7 +305,7 @@ $mol_pop_bubble $mol_scroll
 $mol_string $mol_view
 	dom_name \input
 	enabled true
-	minimal_height 40
+	minimal_height 32
 	autocomplete false
 	field *
 		^
@@ -351,12 +351,10 @@ $mol_select $mol_pop
 	dictionary *
 	options /string
 	value?val \
-	minimal_height 40
 	Option_row!id $mol_button_minor
 		event_click?event <=> event_select!id?event null
 		sub <= option_content!id /
 			<= Option_label!id $mol_dimmer
-				minimal_height 40
 				haystack <= option_label!id \
 				needle <= filter_pattern?val \
 	No_options $mol_view
