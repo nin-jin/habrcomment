@@ -1,7 +1,7 @@
 $my_habrcomment_comment $mol_list
 	time $mol_time_moment
 	expandable false
-	sub /
+	rows /
 		<= Head $mol_view
 			sub <= head /
 				<= Expand $mol_check_expand

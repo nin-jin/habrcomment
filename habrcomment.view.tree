@@ -11,8 +11,9 @@ $my_habrcomment $mol_page
 		<= Lights $mol_lights_toggle
 		<= Sources $mol_link_source
 			uri \https://github.com/nin-jin/habrcomment
-		<= Search $mol_search
+		<= Search $mol_search_jumper
 			query?val <=> search?val \
+			Root <= Body
 	body /
 		<= Content $mol_list rows /
 			<= Article $mol_html_view

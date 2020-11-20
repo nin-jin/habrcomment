@@ -116,7 +116,7 @@ namespace $.$$ {
 		}
 
 		@ $mol_mem_key
-		comments_filtered( id : number ) : number[] {
+		comments_filtered( id : number ) : readonly number[] {
 			return this.comments_all( id ).filter( id => this.comment_filtered( id ) )
 		}
 
