@@ -1030,6 +1030,10 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    function $mol_support_css_overflow_anchor(this: $mol_ambient_context): boolean;
+}
+
+declare namespace $ {
     class $mol_dom_listener extends $mol_object {
         _node: any;
         _event: string;
@@ -1731,7 +1735,7 @@ declare namespace $ {
     class $my_habrcomment_comment extends $mol_list {
         time(): $mol_time_moment;
         expandable(): boolean;
-        sub(): readonly any[];
+        rows(): readonly any[];
         expanded(val?: any): any;
         Expand(): $$.$mol_check_expand;
         user_link(): string;
@@ -2318,6 +2322,65 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $mol_icon_chevron_left extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_chevron_right extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_paginator extends $mol_view {
+        sub(): readonly any[];
+        backward_hint(): string;
+        backward(event?: any): any;
+        Backward_icon(): $mol_icon_chevron_left;
+        Backward(): $mol_button_minor;
+        value(val?: any): any;
+        Value(): $mol_view;
+        forward_hint(): string;
+        forward(event?: any): any;
+        Forward_icon(): $mol_icon_chevron_right;
+        Forward(): $mol_button_minor;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_paginator extends $.$mol_paginator {
+        backward(event: Event): void;
+        forward(event: Event): void;
+    }
+}
+
+declare namespace $ {
+    class $mol_search_jumper extends $mol_search {
+        Root(): $mol_view;
+        Index(): $$.$mol_paginator;
+        forward(event?: any): void;
+        backward(event?: any): void;
+        plugins(): readonly any[];
+        index(val?: any): any;
+        Backward(): $$.$mol_hotkey;
+        Forward(): $$.$mol_hotkey;
+    }
+}
+
+declare namespace $.$$ {
+    class $mol_search_jumper extends $.$mol_search_jumper {
+        results(): $mol_view[][];
+        index(next?: number): number;
+        sub(): ($mol_button_minor | $mol_select | $mol_paginator)[];
+    }
+}
+
+declare namespace $ {
     class $mol_theme_auto extends $mol_plugin {
         attr(): {
             mol_theme: string;
@@ -2348,7 +2411,7 @@ declare namespace $ {
         Lights(): $$.$mol_lights_toggle;
         Sources(): $mol_link_source;
         search(val?: any): any;
-        Search(): $$.$mol_search;
+        Search(): $$.$mol_search_jumper;
         article_content(): string;
         image_uri(node: any): string;
         Article(): $$.$mol_html_view;
@@ -2984,7 +3047,7 @@ declare namespace $.$$ {
         comment_time(id: number): $mol_time_moment;
         comments(id: number): $my_habrcomment_comment[];
         comments_all(id: number): readonly number[];
-        comments_filtered(id: number): number[];
+        comments_filtered(id: number): readonly number[];
         comments_visible(id: number): readonly number[];
         comment_filtered(id: number): boolean;
         comment_expanded(id: number, next?: boolean): boolean;
