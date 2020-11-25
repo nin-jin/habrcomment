@@ -7839,7 +7839,7 @@ var $;
         index(val) {
             if (val !== undefined)
                 return val;
-            return -1;
+            return 0;
         }
         Backward() {
             const obj = new this.$.$mol_hotkey();
@@ -7895,12 +7895,13 @@ var $;
                 if (all.length == 0)
                     return 0;
                 let index = next !== null && next !== void 0 ? next : super.index();
-                if (index >= all.length)
-                    index = 0;
-                if (index < 0)
-                    index = all.length - 1;
+                if (index > all.length)
+                    index = 1;
+                if (index <= 0)
+                    index = all.length;
                 if (next !== undefined) {
-                    this.Root().ensure_visible(all[index][all[index].length - 1]);
+                    const path = all[index - 1];
+                    this.Root().ensure_visible(path[path.length - 1]);
                 }
                 return index;
             }

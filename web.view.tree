@@ -424,7 +424,7 @@ $mol_paginator $mol_view
 $mol_search_jumper $mol_search
 	Root $mol_view
 	Index $mol_paginator
-		value?val <=> index?val -1
+		value?val <=> index?val 0
 		forward?event => forward?event
 		backward?event => backward?event
 	plugins /
