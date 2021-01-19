@@ -2444,7 +2444,8 @@ declare namespace $ {
         comment_expandable(id: any): boolean;
         Theme(): $$.$mol_theme_auto;
         search_focus(event?: any): any;
-        Search_key(): $$.$mol_hotkey;
+        Search_start_1(): $$.$mol_hotkey;
+        Search_start_2(): $$.$mol_hotkey;
     }
 }
 
@@ -2543,6 +2544,10 @@ declare namespace $ {
 
 declare namespace $ {
     type $mol_type_tail<Tuple extends readonly any[]> = ((...tail: Tuple) => any) extends ((head: any, ...tail: infer Tail) => any) ? Tail : never;
+}
+
+declare namespace $ {
+    function $mol_func_is_class(func: Function): boolean;
 }
 
 declare namespace $ {

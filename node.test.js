@@ -8226,7 +8226,8 @@ var $;
         plugins() {
             return [
                 this.Theme(),
-                this.Search_key()
+                this.Search_start_1(),
+                this.Search_start_2()
             ];
         }
         orig_uri() {
@@ -8332,11 +8333,18 @@ var $;
                 return event;
             return null;
         }
-        Search_key() {
+        Search_start_1() {
             const obj = new this.$.$mol_hotkey();
             obj.mod_ctrl = () => true;
             obj.key = () => ({
                 F: (event) => this.search_focus(event)
+            });
+            return obj;
+        }
+        Search_start_2() {
+            const obj = new this.$.$mol_hotkey();
+            obj.key = () => ({
+                F3: (event) => this.search_focus(event)
             });
             return obj;
         }
@@ -8385,7 +8393,10 @@ var $;
     ], $my_habrcomment.prototype, "search_focus", null);
     __decorate([
         $.$mol_mem
-    ], $my_habrcomment.prototype, "Search_key", null);
+    ], $my_habrcomment.prototype, "Search_start_1", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_habrcomment.prototype, "Search_start_2", null);
     $.$my_habrcomment = $my_habrcomment;
 })($ || ($ = {}));
 //habrcomment.view.tree.js.map
@@ -8612,6 +8623,17 @@ var $;
 //tail.js.map
 ;
 "use strict";
+var $;
+(function ($) {
+    function $mol_func_is_class(func) {
+        var _a;
+        return ((_a = Object.getOwnPropertyDescriptor(func, 'prototype')) === null || _a === void 0 ? void 0 : _a.writable) === false;
+    }
+    $.$mol_func_is_class = $mol_func_is_class;
+})($ || ($ = {}));
+//class.js.map
+;
+"use strict";
 //foot.js.map
 ;
 "use strict";
@@ -8621,7 +8643,7 @@ var $;
         return $.$mol_data_setup((input) => {
             let value = input;
             for (const func of funcs)
-                value = func.prototype ? new func(value) : func(value);
+                value = $.$mol_func_is_class(func) ? new func(value) : func(value);
             return value;
         }, { funcs });
     }
@@ -12183,6 +12205,34 @@ var $;
 ;
 "use strict";
 //tail.test.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_test({
+        'function'() {
+            $.$mol_assert_not($.$mol_func_is_class(function () { }));
+        },
+        'generator'() {
+            $.$mol_assert_not($.$mol_func_is_class(function* () { }));
+        },
+        'async'() {
+            $.$mol_assert_not($.$mol_func_is_class(async function () { }));
+        },
+        'arrow'() {
+            $.$mol_assert_not($.$mol_func_is_class(() => null));
+        },
+        'named class'() {
+            $.$mol_assert_ok($.$mol_func_is_class(class Foo {
+            }));
+        },
+        'unnamed class'() {
+            $.$mol_assert_ok($.$mol_func_is_class(class {
+            }));
+        },
+    });
+})($ || ($ = {}));
+//class.test.js.map
 ;
 "use strict";
 //foot.test.js.map
