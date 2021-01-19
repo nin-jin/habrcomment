@@ -8904,42 +8904,21 @@ var $;
                     return this.comments_data().threads;
                 return this.comments_data().comments[id].children;
             }
-            comments_filtered(id) {
-                return this.comments_all(id).filter(id => this.comment_filtered(id));
-            }
             comments_visible(id) {
                 if (this.comment_expanded(id)) {
                     return this.comments_all(id);
                 }
                 else {
-                    return this.comments_filtered(id);
+                    return [];
                 }
-            }
-            comment_filtered(id) {
-                if (this.comments_filtered(id).length > 0)
-                    return true;
-                return this.comment_match(id);
             }
             comment_expanded(id, next) {
                 if (next !== undefined)
                     return next;
-                return this.search().length === 0;
+                return true;
             }
             comment_expandable(id) {
-                return this.comments_all(id).length > this.comments_filtered(id).length;
-            }
-            comment_match(id) {
-                var _a, _b;
-                const query = this.search().toLowerCase();
-                if (!query)
-                    return false;
-                const comment = this.comments_data().comments[id];
-                const text = comment.message.replace(/<.*?>/, '').toLowerCase();
-                if (text.indexOf(query) >= 0)
-                    return true;
-                if (((_a = comment.author) === null || _a === void 0 ? void 0 : _a.login) && (((_b = comment.author.login) === null || _b === void 0 ? void 0 : _b.toLowerCase().indexOf(query)) >= 0))
-                    return true;
-                return false;
+                return this.comments_all(id).length > 0;
             }
             root_comments() {
                 return this.comments(0);
@@ -8970,22 +8949,13 @@ var $;
         ], $my_habrcomment.prototype, "comments_all", null);
         __decorate([
             $.$mol_mem_key
-        ], $my_habrcomment.prototype, "comments_filtered", null);
-        __decorate([
-            $.$mol_mem_key
         ], $my_habrcomment.prototype, "comments_visible", null);
-        __decorate([
-            $.$mol_mem_key
-        ], $my_habrcomment.prototype, "comment_filtered", null);
         __decorate([
             $.$mol_mem_key
         ], $my_habrcomment.prototype, "comment_expanded", null);
         __decorate([
             $.$mol_mem_key
         ], $my_habrcomment.prototype, "comment_expandable", null);
-        __decorate([
-            $.$mol_mem_key
-        ], $my_habrcomment.prototype, "comment_match", null);
         $$.$my_habrcomment = $my_habrcomment;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));

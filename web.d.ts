@@ -3042,12 +3042,9 @@ declare namespace $.$$ {
         comment_time(id: number): $mol_time_moment;
         comments(id: number): $my_habrcomment_comment[];
         comments_all(id: number): readonly number[];
-        comments_filtered(id: number): readonly number[];
         comments_visible(id: number): readonly number[];
-        comment_filtered(id: number): boolean;
         comment_expanded(id: number, next?: boolean): boolean;
         comment_expandable(id: number): boolean;
-        comment_match(id: number): boolean;
         root_comments(): $my_habrcomment_comment[];
         search_focus(event: Event): void;
         search(next?: string): string;
