@@ -116,52 +116,25 @@ namespace $.$$ {
 		}
 
 		@ $mol_mem_key
-		comments_filtered( id : number ) : readonly number[] {
-			return this.comments_all( id ).filter( id => this.comment_filtered( id ) )
-		}
-
-		@ $mol_mem_key
 		comments_visible( id : number ) : readonly number[] {
 
 			if( this.comment_expanded( id ) ) {
 				return this.comments_all( id )
 			} else {
-				return this.comments_filtered( id )
+				return []
 			}
 
 		}
 
 		@ $mol_mem_key
-		comment_filtered( id : number ) : boolean {
-			if( this.comments_filtered( id ).length > 0 ) return true
-			return this.comment_match( id )
-		}
-
-		@ $mol_mem_key
 		comment_expanded( id : number , next? : boolean ) : boolean {
 			if( next !== undefined ) return next
-			return this.search().length === 0
+			return true
 		}
 
 		@ $mol_mem_key
 		comment_expandable( id : number ) : boolean {
-			return this.comments_all( id ).length > this.comments_filtered( id ).length 
-		}
-
-		@ $mol_mem_key
-		comment_match( id : number ) {
-		
-			const query = this.search().toLowerCase()
-			if( !query ) return false
-
-			const comment = this.comments_data().comments[ id ]
-			
-			const text = comment.message.replace( /<.*?>/ , '' ).toLowerCase()
-			if( text.indexOf( query ) >= 0 ) return true
-
-			if( comment.author?.login && ( comment.author.login?.toLowerCase().indexOf( query ) >= 0 ) ) return true
-
-			return false
+			return this.comments_all( id ).length > 0
 		}
 
 		root_comments() {
