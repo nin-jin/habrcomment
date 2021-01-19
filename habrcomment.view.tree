@@ -35,6 +35,8 @@ $my_habrcomment $mol_page
 		image_uri!node <= image_uri!node \
 	plugins /
 		<= Theme $mol_theme_auto
-		<= Search_key $mol_hotkey
+		<= Search_start_1 $mol_hotkey
 			mod_ctrl true
 			key * F?event <=> search_focus?event null
+		<= Search_start_2 $mol_hotkey
+			key * F3?event <=> search_focus?event null
