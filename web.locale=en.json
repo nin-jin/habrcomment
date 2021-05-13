@@ -3,9 +3,5 @@
 	"$mol_link_source_hint": "Source code",
 	"$mol_paginator_backward_hint": "Назад",
 	"$mol_paginator_forward_hint": "Вперёд",
-	"$mol_search_clear_hint": "Clear",
-	"$mol_search_hint": "Search...",
-	"$mol_select_Filter_hint": "Filter..",
-	"$mol_select_hint": "Pick..",
-	"$mol_select_no_options_message": "No options"
+	"$mol_search_hint": "Search..."
 }

@@ -117,8 +117,10 @@ declare namespace $ {
         set $(next: $);
         constructor(init?: (obj: any) => void);
         static create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+        static [Symbol.toPrimitive](): any;
         static toString(): any;
         destructor(): void;
+        [Symbol.toPrimitive](hint: string): any;
         toString(): any;
         toJSON(): any;
     }
@@ -591,6 +593,7 @@ declare namespace $ {
         dom_node(next?: Element): Element;
         dom_tree(next?: Element): Element;
         dom_node_actual(): Element;
+        auto(): void;
         render(): void;
         static view_classes(): (typeof $mol_view)[];
         view_names_owned(): string[];
@@ -614,7 +617,7 @@ declare namespace $ {
         plugins(): readonly $mol_view[];
         view_find(check: (path: $mol_view, text?: string) => boolean, path?: $mol_view[]): Generator<$mol_view[]>;
         force_render(path: Set<$mol_view>): void;
-        ensure_visible(view: $mol_view): Promise<void>;
+        ensure_visible(view: $mol_view, align?: ScrollLogicalPosition): Promise<void>;
     }
     type $mol_view_all = $mol_type_pick<$, typeof $mol_view>;
 }
@@ -1100,6 +1103,15 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    enum $mol_time_moment_weekdays {
+        monday = 0,
+        tuesday = 1,
+        wednesday = 2,
+        thursday = 3,
+        friday = 4,
+        saturday = 5,
+        sunday = 6
+    }
     type $mol_time_moment_config = number | Date | string | {
         year?: number;
         month?: number;
@@ -1354,7 +1366,7 @@ declare namespace $ {
             tabindex: number;
             title: string;
         };
-        sub(): readonly any[];
+        sub(): readonly $mol_view_content[];
         checked(val?: any): any;
         Icon(): any;
         title(): string;
@@ -1373,7 +1385,7 @@ declare namespace $ {
 declare namespace $.$$ {
     class $mol_check extends $.$mol_check {
         click(next?: Event): void;
-        sub(): any[];
+        sub(): readonly $mol_view_content[];
         label(): readonly any[];
     }
 }
@@ -1763,7 +1775,7 @@ declare namespace $.$$ {
     class $my_habrcomment_comment extends $.$my_habrcomment_comment {
         user_link(): string;
         time_string(): string;
-        head(): ($mol_view | $mol_check_expand)[];
+        head(): $mol_view[];
     }
 }
 
@@ -1944,11 +1956,47 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $mol_bar extends $mol_view {
+    class $mol_pop extends $mol_view {
+        event(): {
+            keydown: (event?: any) => any;
+        };
+        showed(val?: any): any;
+        sub(): readonly any[];
+        keydown(event?: any): any;
+        Anchor(): any;
+        align(): string;
+        bubble_content(): readonly $mol_view_content[];
+        height_max(): number;
+        Bubble(): $mol_pop_bubble;
+    }
+    class $mol_pop_bubble extends $mol_scroll {
+        sub(): readonly $mol_view_content[];
+        style(): {
+            maxHeight: number;
+        };
+        attr(): {
+            mol_pop_align: string;
+            tabindex: number;
+        };
+        content(): readonly $mol_view_content[];
+        height_max(): number;
+        align(): string;
     }
 }
 
 declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_pop extends $.$mol_pop {
+        showed(next?: boolean): boolean;
+        sub(): any[];
+        height_max(): number;
+        align(): string;
+        align_vert(): "suspense" | "top" | "bottom";
+        align_hor(): "suspense" | "left" | "right";
+        keydown(event: KeyboardEvent): void;
+    }
 }
 
 declare namespace $ {
@@ -2087,101 +2135,6 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    class $mol_pop extends $mol_view {
-        event(): {
-            keydown: (event?: any) => any;
-        };
-        showed(val?: any): any;
-        sub(): readonly any[];
-        keydown(event?: any): any;
-        Anchor(): any;
-        align(): string;
-        bubble_content(): readonly $mol_view_content[];
-        height_max(): number;
-        Bubble(): $mol_pop_bubble;
-    }
-    class $mol_pop_bubble extends $mol_scroll {
-        sub(): readonly $mol_view_content[];
-        style(): {
-            maxHeight: number;
-        };
-        attr(): {
-            mol_pop_align: string;
-            tabindex: number;
-        };
-        content(): readonly $mol_view_content[];
-        height_max(): number;
-        align(): string;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $.$$ {
-    class $mol_pop extends $.$mol_pop {
-        sub(): any[];
-        height_max(): number;
-        align(): string;
-        keydown(event: KeyboardEvent): void;
-    }
-}
-
-declare namespace $ {
-    class $mol_string extends $mol_view {
-        dom_name(): string;
-        enabled(): boolean;
-        minimal_height(): number;
-        autocomplete(): boolean;
-        field(): {
-            disabled: boolean;
-            value: any;
-            placeholder: string;
-            type: any;
-            spellcheck: boolean;
-            autocomplete: string;
-        };
-        attr(): {
-            maxlength: number;
-        };
-        event(): {
-            input: (event?: any) => any;
-            keydown: (event?: any) => any;
-        };
-        plugins(): readonly any[];
-        disabled(): boolean;
-        value(val?: any): any;
-        value_changed(val?: any): any;
-        hint(): string;
-        type(val?: any): any;
-        spellcheck(): boolean;
-        autocomplete_native(): string;
-        length_max(): number;
-        event_change(event?: any): any;
-        event_key_press(event?: any): any;
-        submit(event?: any): any;
-        Submit(): $$.$mol_hotkey;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $.$$ {
-    class $mol_string extends $.$mol_string {
-        event_change(next?: Event): void;
-        disabled(): boolean;
-        autocomplete_native(): "on" | "off";
-    }
-}
-
-declare namespace $ {
-    class $mol_icon_dots_vertical extends $mol_icon {
-        path(): string;
-    }
-}
-
-declare namespace $ {
     class $mol_nav extends $mol_plugin {
         cycle(val?: any): any;
         mod_ctrl(): boolean;
@@ -2215,89 +2168,78 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    class $mol_select extends $mol_pop {
-        dictionary(): {};
-        options(): readonly string[];
-        value(val?: any): any;
-        Option_row(id: any): $mol_button_minor;
-        No_options(): $mol_view;
-        plugins(): readonly any[];
-        showed(val?: any): any;
-        Anchor(): $mol_button_minor;
-        bubble_content(): readonly any[];
-        Filter(): $$.$mol_string;
-        Trigger_icon(): $mol_icon_dots_vertical;
-        event_select(id: any, event?: any): any;
-        option_label(id: any): string;
-        filter_pattern(val?: any): any;
-        Option_label(id: any): $$.$mol_dimmer;
-        option_content(id: any): readonly any[];
-        no_options_message(): string;
-        nav_components(): readonly $mol_view[];
-        option_focused(component?: any): any;
-        nav_cycle(val?: any): any;
-        Nav(): $$.$mol_nav;
-        options_showed(val?: any): any;
-        open(event?: any): any;
-        trigger_content(): readonly any[];
-        hint(): string;
-        Trigger(): $mol_button_minor;
-        menu_content(): readonly $mol_view[];
-        Menu(): $$.$mol_list;
-        submit(event?: any): any;
+    class $mol_string extends $mol_view {
+        dom_name(): string;
         enabled(): boolean;
+        minimal_height(): number;
+        autocomplete(): boolean;
+        field(): {
+            disabled: boolean;
+            value: any;
+            placeholder: string;
+            spellcheck: boolean;
+            autocomplete: string;
+        };
+        attr(): {
+            maxlength: number;
+            type: any;
+        };
+        event(): {
+            input: (event?: any) => any;
+            keydown: (event?: any) => any;
+        };
+        plugins(): readonly any[];
+        disabled(): boolean;
+        value(val?: any): any;
+        value_changed(val?: any): any;
+        hint(): string;
+        spellcheck(): boolean;
+        autocomplete_native(): string;
+        length_max(): number;
+        type(val?: any): any;
+        event_change(event?: any): any;
+        event_key_press(event?: any): any;
+        submit(event?: any): any;
+        Submit(): $$.$mol_hotkey;
     }
-}
-
-declare namespace $ {
-    function $mol_match_text<Variant>(query: string, values: (variant: Variant) => string[]): (variant: Variant) => boolean;
 }
 
 declare namespace $ {
 }
 
 declare namespace $.$$ {
-    class $mol_select extends $.$mol_select {
-        filter_pattern(next?: string): string;
-        open(): void;
-        options_showed(next?: boolean): boolean;
-        options(): readonly string[];
-        options_filtered(): readonly string[];
-        option_label(id: string): any;
-        option_rows(): $mol_button_minor[];
-        option_focused(component?: $mol_view): $mol_view | $mol_string | null;
-        event_select(id: string, event?: MouseEvent): void;
-        nav_components(): ($mol_button_minor | $mol_string)[];
-        trigger_content(): readonly $mol_view_content[];
-        menu_content(): ($mol_view | $mol_string)[];
+    class $mol_string extends $.$mol_string {
+        event_change(next?: Event): void;
+        disabled(): boolean;
+        autocomplete_native(): "on" | "off";
     }
 }
 
 declare namespace $ {
-    class $mol_icon_cross extends $mol_icon {
-        path(): string;
-    }
-}
-
-declare namespace $ {
-    class $mol_search extends $mol_bar {
+    class $mol_search extends $mol_pop {
         query(val?: any): any;
-        plugins(): readonly any[];
-        sub(): readonly any[];
-        event_clear(val?: any): any;
-        Hotkey(): $$.$mol_hotkey;
-        suggest_selected(val?: any): any;
-        hint(): string;
-        suggests_showed(): boolean;
         suggests(): readonly string[];
+        plugins(): readonly $mol_plugin[];
+        showed(val?: any): any;
+        Anchor(): $$.$mol_string;
+        bubble_content(): readonly $mol_view_content[];
+        Suggest(id: any): $mol_button_minor;
+        clear(val?: any): any;
+        Hotkey(): $$.$mol_hotkey;
+        nav_components(): readonly $mol_view[];
+        nav_focused(component?: any): any;
+        Nav(): $$.$mol_nav;
+        suggests_showed(val?: any): any;
+        hint(): string;
         submit(event?: any): any;
         enabled(): boolean;
-        Suggest_filter(): $$.$mol_string;
-        suggest_option_rows(): $mol_button_minor[];
-        Suggest(): $$.$mol_select;
-        Clear_icon(): $mol_icon_cross;
-        clear_hint(): string;
-        Clear(): $mol_button_minor;
+        Query(): $$.$mol_string;
+        menu_items(): readonly $mol_view[];
+        Menu(): $$.$mol_list;
+        suggest_select(id: any, event?: any): any;
+        suggest_label(id: any): string;
+        Suggest_label(id: any): $$.$mol_dimmer;
+        suggest_content(id: any): readonly $mol_view_content[];
     }
 }
 
@@ -2306,10 +2248,14 @@ declare namespace $ {
 
 declare namespace $.$$ {
     class $mol_search extends $.$mol_search {
-        suggests_showed(): boolean;
+        suggests_showed(next?: boolean): boolean;
         suggest_selected(next?: string): void;
-        sub(): ($mol_button_minor | $mol_select)[];
-        event_clear(event?: Event): void;
+        nav_components(): ($mol_button_minor | $mol_string)[];
+        nav_focused(component?: $mol_view): $mol_view | $mol_string | null;
+        suggest_label(key: string): string;
+        menu_items(): $mol_button_minor[];
+        suggest_select(id: string, event?: MouseEvent): void;
+        clear(event?: Event): void;
     }
 }
 
@@ -2368,7 +2314,7 @@ declare namespace $.$$ {
     class $mol_search_jumper extends $.$mol_search_jumper {
         results(): $mol_view[][];
         index(next?: number): number;
-        sub(): ($mol_button_minor | $mol_select | $mol_paginator)[];
+        sub(): ($mol_string | $mol_paginator)[];
     }
 }
 
@@ -2480,9 +2426,16 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    type $mol_type_merge<Intersection> = Intersection extends (...a: any[]) => any ? Intersection : Intersection extends new (...a: any[]) => any ? Intersection : Intersection extends object ? {
+    type $mol_type_equals<A, B> = (<X>() => X extends A ? 1 : 2) extends (<X>() => X extends B ? 1 : 2) ? unknown : never;
+}
+
+declare namespace $ {
+    type $mol_type_merge<Intersection> = Intersection extends (...a: any[]) => any ? Intersection : Intersection extends new (...a: any[]) => any ? Intersection : Intersection extends object ? $mol_type_merge_object<Intersection> extends Intersection ? unknown extends $mol_type_equals<$mol_type_merge_object<Intersection>, Intersection> ? Intersection : {
         [Key in keyof Intersection]: $mol_type_merge<Intersection[Key]>;
-    } : Intersection;
+    } : Intersection : Intersection;
+    type $mol_type_merge_object<Intersection> = {
+        [Key in keyof Intersection]: Intersection[Key];
+    };
 }
 
 declare namespace $ {
@@ -2492,9 +2445,9 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_data_record<Sub extends Record<string, $mol_data_value<any>>>(sub: Sub): ((val: unknown) => Readonly<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends (...a: any[]) => any ? ((...a: any[]) => any) & Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends new (...a: any[]) => any ? (new (...a: any[]) => any) & Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends object ? { [Key in keyof (Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>)]: $mol_type_merge<(Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>)[Key]>; } : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>) & {
+    function $mol_data_record<Sub extends Record<string, $mol_data_value<any>>>(sub: Sub): ((val: unknown) => Readonly<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends (...a: any[]) => any ? ((...a: any[]) => any) & Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends new (...a: any[]) => any ? (new (...a: any[]) => any) & Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends object ? $mol_type_merge_object<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>> extends Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> ? unknown extends $mol_type_equals<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> & $mol_type_merge_object<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>, Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>> ? Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : { [Key in keyof (Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>)]: $mol_type_merge<(Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>)[Key]>; } : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>) & {
         config: Sub;
-        Value: Readonly<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends (...a: any[]) => any ? ((...a: any[]) => any) & Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends new (...a: any[]) => any ? (new (...a: any[]) => any) & Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends object ? { [Key in keyof (Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>)]: $mol_type_merge<(Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>)[Key]>; } : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>;
+        Value: Readonly<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends (...a: any[]) => any ? ((...a: any[]) => any) & Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends new (...a: any[]) => any ? (new (...a: any[]) => any) & Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> extends object ? $mol_type_merge_object<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>> extends Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> ? unknown extends $mol_type_equals<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> & $mol_type_merge_object<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>, Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>> ? Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : { [Key in keyof (Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>)]: $mol_type_merge<(Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>)[Key]>; } : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]> : Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>;
     };
 }
 
@@ -2559,467 +2512,43 @@ declare namespace $.$$ {
         orig_uri(): string;
         comments_data(): Readonly<{
             comments: {
-                [x: string]: {
-                    readonly id: number;
-                    readonly author: {
-                        readonly alias: string;
-                        readonly id: string;
-                        readonly login: string;
-                        readonly fullname: string | null;
-                        readonly avatarUrl: string | null;
-                        readonly speciality: string | null;
-                    } | null;
-                    readonly children: readonly number[];
-                    readonly isAuthor: boolean | null;
-                    readonly isCanEdit: boolean | null;
-                    readonly isFavorite: boolean | null;
-                    readonly isNew: boolean | null;
-                    readonly isPostAuthor: boolean | null;
-                    readonly isSuspended: boolean | null;
-                    readonly level: number;
-                    readonly message: string;
-                    readonly parentId: number;
-                    readonly score: number | null;
-                    readonly timeChanged: {
-                        readonly year: number | undefined;
-                        readonly month: number | undefined;
-                        readonly day: number | undefined;
-                        readonly hour: number | undefined;
-                        readonly minute: number | undefined;
-                        readonly second: number | undefined;
-                        readonly offset: {
-                            readonly year: number;
-                            readonly month: number;
-                            readonly day: number;
-                            readonly hour: number;
-                            readonly minute: number;
-                            readonly second: number;
-                            summ: (config: $mol_time_duration_config) => $mol_time_duration;
-                            mult: (numb: number) => $mol_time_duration;
-                            count: (config: $mol_time_duration_config) => number;
-                            valueOf: () => number;
-                            toJSON: () => string;
-                            toString: (pattern?: string) => string;
-                        } | undefined;
-                        readonly weekday: number;
-                        _native: {
-                            toString: () => string;
-                            toDateString: () => string;
-                            toTimeString: () => string;
-                            toLocaleString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleDateString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleTimeString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            valueOf: () => number;
-                            getTime: () => number;
-                            getFullYear: () => number;
-                            getUTCFullYear: () => number;
-                            getMonth: () => number;
-                            getUTCMonth: () => number;
-                            getDate: () => number;
-                            getUTCDate: () => number;
-                            getDay: () => number;
-                            getUTCDay: () => number;
-                            getHours: () => number;
-                            getUTCHours: () => number;
-                            getMinutes: () => number;
-                            getUTCMinutes: () => number;
-                            getSeconds: () => number;
-                            getUTCSeconds: () => number;
-                            getMilliseconds: () => number;
-                            getUTCMilliseconds: () => number;
-                            getTimezoneOffset: () => number;
-                            setTime: (time: number) => number;
-                            setMilliseconds: (ms: number) => number;
-                            setUTCMilliseconds: (ms: number) => number;
-                            setSeconds: (sec: number, ms?: number | undefined) => number;
-                            setUTCSeconds: (sec: number, ms?: number | undefined) => number;
-                            setMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setDate: (date: number) => number;
-                            setUTCDate: (date: number) => number;
-                            setMonth: (month: number, date?: number | undefined) => number;
-                            setUTCMonth: (month: number, date?: number | undefined) => number;
-                            setFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            setUTCFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            toUTCString: () => string;
-                            toISOString: () => string;
-                            toJSON: (key?: any) => string;
-                            getVarDate: () => VarDate;
-                        } | undefined;
-                        readonly native: {
-                            toString: () => string;
-                            toDateString: () => string;
-                            toTimeString: () => string;
-                            toLocaleString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleDateString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleTimeString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            valueOf: () => number;
-                            getTime: () => number;
-                            getFullYear: () => number;
-                            getUTCFullYear: () => number;
-                            getMonth: () => number;
-                            getUTCMonth: () => number;
-                            getDate: () => number;
-                            getUTCDate: () => number;
-                            getDay: () => number;
-                            getUTCDay: () => number;
-                            getHours: () => number;
-                            getUTCHours: () => number;
-                            getMinutes: () => number;
-                            getUTCMinutes: () => number;
-                            getSeconds: () => number;
-                            getUTCSeconds: () => number;
-                            getMilliseconds: () => number;
-                            getUTCMilliseconds: () => number;
-                            getTimezoneOffset: () => number;
-                            setTime: (time: number) => number;
-                            setMilliseconds: (ms: number) => number;
-                            setUTCMilliseconds: (ms: number) => number;
-                            setSeconds: (sec: number, ms?: number | undefined) => number;
-                            setUTCSeconds: (sec: number, ms?: number | undefined) => number;
-                            setMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setDate: (date: number) => number;
-                            setUTCDate: (date: number) => number;
-                            setMonth: (month: number, date?: number | undefined) => number;
-                            setUTCMonth: (month: number, date?: number | undefined) => number;
-                            setFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            setUTCFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            toUTCString: () => string;
-                            toISOString: () => string;
-                            toJSON: (key?: any) => string;
-                            getVarDate: () => VarDate;
-                        };
-                        _normal: any | undefined;
-                        readonly normal: any;
-                        merge: (config: $mol_time_moment_config) => $mol_time_moment;
-                        shift: (config: $mol_time_duration_config) => $mol_time_moment;
-                        mask: (config: $mol_time_moment_config) => $mol_time_moment;
-                        toOffset: (config: $mol_time_duration_config) => $mol_time_moment;
-                        valueOf: () => number;
-                        toJSON: () => string;
-                        toString: (pattern?: string) => string;
-                    } | null;
-                    readonly timeEditAllowedTill: {
-                        readonly year: number | undefined;
-                        readonly month: number | undefined;
-                        readonly day: number | undefined;
-                        readonly hour: number | undefined;
-                        readonly minute: number | undefined;
-                        readonly second: number | undefined;
-                        readonly offset: {
-                            readonly year: number;
-                            readonly month: number;
-                            readonly day: number;
-                            readonly hour: number;
-                            readonly minute: number;
-                            readonly second: number;
-                            summ: (config: $mol_time_duration_config) => $mol_time_duration;
-                            mult: (numb: number) => $mol_time_duration;
-                            count: (config: $mol_time_duration_config) => number;
-                            valueOf: () => number;
-                            toJSON: () => string;
-                            toString: (pattern?: string) => string;
-                        } | undefined;
-                        readonly weekday: number;
-                        _native: {
-                            toString: () => string;
-                            toDateString: () => string;
-                            toTimeString: () => string;
-                            toLocaleString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleDateString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleTimeString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            valueOf: () => number;
-                            getTime: () => number;
-                            getFullYear: () => number;
-                            getUTCFullYear: () => number;
-                            getMonth: () => number;
-                            getUTCMonth: () => number;
-                            getDate: () => number;
-                            getUTCDate: () => number;
-                            getDay: () => number;
-                            getUTCDay: () => number;
-                            getHours: () => number;
-                            getUTCHours: () => number;
-                            getMinutes: () => number;
-                            getUTCMinutes: () => number;
-                            getSeconds: () => number;
-                            getUTCSeconds: () => number;
-                            getMilliseconds: () => number;
-                            getUTCMilliseconds: () => number;
-                            getTimezoneOffset: () => number;
-                            setTime: (time: number) => number;
-                            setMilliseconds: (ms: number) => number;
-                            setUTCMilliseconds: (ms: number) => number;
-                            setSeconds: (sec: number, ms?: number | undefined) => number;
-                            setUTCSeconds: (sec: number, ms?: number | undefined) => number;
-                            setMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setDate: (date: number) => number;
-                            setUTCDate: (date: number) => number;
-                            setMonth: (month: number, date?: number | undefined) => number;
-                            setUTCMonth: (month: number, date?: number | undefined) => number;
-                            setFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            setUTCFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            toUTCString: () => string;
-                            toISOString: () => string;
-                            toJSON: (key?: any) => string;
-                            getVarDate: () => VarDate;
-                        } | undefined;
-                        readonly native: {
-                            toString: () => string;
-                            toDateString: () => string;
-                            toTimeString: () => string;
-                            toLocaleString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleDateString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleTimeString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            valueOf: () => number;
-                            getTime: () => number;
-                            getFullYear: () => number;
-                            getUTCFullYear: () => number;
-                            getMonth: () => number;
-                            getUTCMonth: () => number;
-                            getDate: () => number;
-                            getUTCDate: () => number;
-                            getDay: () => number;
-                            getUTCDay: () => number;
-                            getHours: () => number;
-                            getUTCHours: () => number;
-                            getMinutes: () => number;
-                            getUTCMinutes: () => number;
-                            getSeconds: () => number;
-                            getUTCSeconds: () => number;
-                            getMilliseconds: () => number;
-                            getUTCMilliseconds: () => number;
-                            getTimezoneOffset: () => number;
-                            setTime: (time: number) => number;
-                            setMilliseconds: (ms: number) => number;
-                            setUTCMilliseconds: (ms: number) => number;
-                            setSeconds: (sec: number, ms?: number | undefined) => number;
-                            setUTCSeconds: (sec: number, ms?: number | undefined) => number;
-                            setMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setDate: (date: number) => number;
-                            setUTCDate: (date: number) => number;
-                            setMonth: (month: number, date?: number | undefined) => number;
-                            setUTCMonth: (month: number, date?: number | undefined) => number;
-                            setFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            setUTCFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            toUTCString: () => string;
-                            toISOString: () => string;
-                            toJSON: (key?: any) => string;
-                            getVarDate: () => VarDate;
-                        };
-                        _normal: any | undefined;
-                        readonly normal: any;
-                        merge: (config: $mol_time_moment_config) => $mol_time_moment;
-                        shift: (config: $mol_time_duration_config) => $mol_time_moment;
-                        mask: (config: $mol_time_moment_config) => $mol_time_moment;
-                        toOffset: (config: $mol_time_duration_config) => $mol_time_moment;
-                        valueOf: () => number;
-                        toJSON: () => string;
-                        toString: (pattern?: string) => string;
-                    } | null;
-                    readonly timePublished: {
-                        readonly year: number | undefined;
-                        readonly month: number | undefined;
-                        readonly day: number | undefined;
-                        readonly hour: number | undefined;
-                        readonly minute: number | undefined;
-                        readonly second: number | undefined;
-                        readonly offset: {
-                            readonly year: number;
-                            readonly month: number;
-                            readonly day: number;
-                            readonly hour: number;
-                            readonly minute: number;
-                            readonly second: number;
-                            summ: (config: $mol_time_duration_config) => $mol_time_duration;
-                            mult: (numb: number) => $mol_time_duration;
-                            count: (config: $mol_time_duration_config) => number;
-                            valueOf: () => number;
-                            toJSON: () => string;
-                            toString: (pattern?: string) => string;
-                        } | undefined;
-                        readonly weekday: number;
-                        _native: {
-                            toString: () => string;
-                            toDateString: () => string;
-                            toTimeString: () => string;
-                            toLocaleString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleDateString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleTimeString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            valueOf: () => number;
-                            getTime: () => number;
-                            getFullYear: () => number;
-                            getUTCFullYear: () => number;
-                            getMonth: () => number;
-                            getUTCMonth: () => number;
-                            getDate: () => number;
-                            getUTCDate: () => number;
-                            getDay: () => number;
-                            getUTCDay: () => number;
-                            getHours: () => number;
-                            getUTCHours: () => number;
-                            getMinutes: () => number;
-                            getUTCMinutes: () => number;
-                            getSeconds: () => number;
-                            getUTCSeconds: () => number;
-                            getMilliseconds: () => number;
-                            getUTCMilliseconds: () => number;
-                            getTimezoneOffset: () => number;
-                            setTime: (time: number) => number;
-                            setMilliseconds: (ms: number) => number;
-                            setUTCMilliseconds: (ms: number) => number;
-                            setSeconds: (sec: number, ms?: number | undefined) => number;
-                            setUTCSeconds: (sec: number, ms?: number | undefined) => number;
-                            setMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setDate: (date: number) => number;
-                            setUTCDate: (date: number) => number;
-                            setMonth: (month: number, date?: number | undefined) => number;
-                            setUTCMonth: (month: number, date?: number | undefined) => number;
-                            setFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            setUTCFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            toUTCString: () => string;
-                            toISOString: () => string;
-                            toJSON: (key?: any) => string;
-                            getVarDate: () => VarDate;
-                        } | undefined;
-                        readonly native: {
-                            toString: () => string;
-                            toDateString: () => string;
-                            toTimeString: () => string;
-                            toLocaleString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleDateString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            toLocaleTimeString: {
-                                (): string;
-                                (locales?: string | string[] | undefined, options?: Intl.DateTimeFormatOptions | undefined): string;
-                            };
-                            valueOf: () => number;
-                            getTime: () => number;
-                            getFullYear: () => number;
-                            getUTCFullYear: () => number;
-                            getMonth: () => number;
-                            getUTCMonth: () => number;
-                            getDate: () => number;
-                            getUTCDate: () => number;
-                            getDay: () => number;
-                            getUTCDay: () => number;
-                            getHours: () => number;
-                            getUTCHours: () => number;
-                            getMinutes: () => number;
-                            getUTCMinutes: () => number;
-                            getSeconds: () => number;
-                            getUTCSeconds: () => number;
-                            getMilliseconds: () => number;
-                            getUTCMilliseconds: () => number;
-                            getTimezoneOffset: () => number;
-                            setTime: (time: number) => number;
-                            setMilliseconds: (ms: number) => number;
-                            setUTCMilliseconds: (ms: number) => number;
-                            setSeconds: (sec: number, ms?: number | undefined) => number;
-                            setUTCSeconds: (sec: number, ms?: number | undefined) => number;
-                            setMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCMinutes: (min: number, sec?: number | undefined, ms?: number | undefined) => number;
-                            setHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setUTCHours: (hours: number, min?: number | undefined, sec?: number | undefined, ms?: number | undefined) => number;
-                            setDate: (date: number) => number;
-                            setUTCDate: (date: number) => number;
-                            setMonth: (month: number, date?: number | undefined) => number;
-                            setUTCMonth: (month: number, date?: number | undefined) => number;
-                            setFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            setUTCFullYear: (year: number, month?: number | undefined, date?: number | undefined) => number;
-                            toUTCString: () => string;
-                            toISOString: () => string;
-                            toJSON: (key?: any) => string;
-                            getVarDate: () => VarDate;
-                        };
-                        _normal: any | undefined;
-                        readonly normal: any;
-                        merge: (config: $mol_time_moment_config) => $mol_time_moment;
-                        shift: (config: $mol_time_duration_config) => $mol_time_moment;
-                        mask: (config: $mol_time_moment_config) => $mol_time_moment;
-                        toOffset: (config: $mol_time_duration_config) => $mol_time_moment;
-                        valueOf: () => number;
-                        toJSON: () => string;
-                        toString: (pattern?: string) => string;
-                    } | null;
-                    readonly votesCount: number | null;
-                };
+                [x: string]: Readonly<{
+                    id: string;
+                    author: Readonly<{
+                        alias: string;
+                        id: string;
+                        fullname: string | null;
+                        avatarUrl: string | null;
+                        speciality: string | null;
+                    }> | null;
+                    children: readonly string[];
+                    isAuthor: boolean | null;
+                    isCanEdit: boolean | null;
+                    isFavorite: boolean | null;
+                    isNew: boolean | null;
+                    isPostAuthor: boolean | null;
+                    isSuspended: boolean | null;
+                    level: number;
+                    message: string;
+                    parentId: string | null;
+                    score: number | null;
+                    timeChanged: $mol_time_moment | null;
+                    timeEditAllowedTill: $mol_time_moment | null;
+                    timePublished: $mol_time_moment | null;
+                    votesCount: number | null;
+                }>;
             };
-            threads: readonly number[];
+            threads: readonly string[];
         }>;
-        comment_message(id: number): string;
-        comment_avatar(id: number): string;
-        comment_user(id: number): string;
-        comment_time(id: number): $mol_time_moment;
-        comments(id: number): $my_habrcomment_comment[];
-        comments_all(id: number): readonly number[];
-        comments_visible(id: number): readonly number[];
-        comment_expanded(id: number, next?: boolean): boolean;
-        comment_expandable(id: number): boolean;
+        comment_message(id: string): string;
+        comment_avatar(id: string): string;
+        comment_user(id: string): string;
+        comment_time(id: string): $mol_time_moment;
+        comments(id: string): $my_habrcomment_comment[];
+        comments_all(id: string): readonly string[];
+        comments_visible(id: string): readonly string[];
+        comment_expanded(id: string, next?: boolean): boolean;
+        comment_expandable(id: string): boolean;
         root_comments(): $my_habrcomment_comment[];
         search_focus(event: Event): void;
         search(next?: string): string;
@@ -3126,7 +2655,7 @@ declare namespace $ {
     function $mol_view_tree_prop_key(prop: $mol_tree): string;
     function $mol_view_tree_prop_next(prop: $mol_tree): string;
     function $mol_view_tree_prop_value(prop: $mol_tree): $mol_tree;
-    function $mol_view_tree_value_type(val: $mol_tree): "locale" | "string" | "object" | "bool" | "null" | "dict" | "get" | "bind" | "put" | "list" | "number";
+    function $mol_view_tree_value_type(val: $mol_tree): "number" | "locale" | "string" | "object" | "bool" | "null" | "dict" | "get" | "bind" | "put" | "list";
     function $mol_view_tree_compile(tree: $mol_tree): {
         script: string;
         locales: {
@@ -3134,3 +2663,5 @@ declare namespace $ {
         };
     };
 }
+
+export = $;
