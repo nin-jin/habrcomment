@@ -13,16 +13,15 @@ namespace $.$$ {
 	const Person = Rec({
 		alias: Str,
 		id: Str,
-		login: Str,
 		fullname: Maybe( Str ),
 		avatarUrl: Maybe( Str ),
 		speciality: Maybe( Str ),
 	})
 
 	const Comment =  Rec({
-		id: Int,
+		id: Str,
 		author: Maybe( Person ),
-		children: List( Int ),
+		children: List( Str ),
 		isAuthor: Maybe( Bool ),
 		isCanEdit: Maybe( Bool ),
 		isFavorite: Maybe( Bool ),
@@ -31,7 +30,7 @@ namespace $.$$ {
 		isSuspended: Maybe( Bool ),
 		level: Int,
 		message: Str,
-		parentId: Int,
+		parentId: Maybe( Str ),
 		score: Maybe( Int ),
 		timeChanged: Maybe( Moment ),
 		timeEditAllowedTill: Maybe( Moment ),
@@ -41,7 +40,7 @@ namespace $.$$ {
 	
 	const Comments_response = Rec({
 		comments: Dict( Comment ),
-		threads: List( Int ),
+		threads: List( Str ),
 	})
 
 	const Article = Rec({
@@ -81,11 +80,11 @@ namespace $.$$ {
 			return data
 		}
 
-		comment_message( id : number ) {
+		comment_message( id : string ) {
 			return this.comments_data().comments[ id ].message
 		}
 
-		comment_avatar( id : number ) {
+		comment_avatar( id : string ) {
 			
 			let uri = this.comments_data().comments[ id ].author?.avatarUrl ?? ''
 			
@@ -95,28 +94,28 @@ namespace $.$$ {
 			return uri
 		}
 
-		comment_user( id : number ) {
-			return this.comments_data().comments[ id ].author?.login ?? 'ufo'
+		comment_user( id : string ) {
+			return this.comments_data().comments[ id ].author?.alias ?? 'ufo'
 		}
 
-		comment_time( id : number ) {
+		comment_time( id : string ) {
 			return this.comments_data().comments[ id ].timePublished as $mol_time_moment
 				?? new $mol_time_moment
 		}
 
 		@ $mol_mem_key
-		comments( id : number ) : $my_habrcomment_comment[] {
+		comments( id : string ) : $my_habrcomment_comment[] {
 			return this.comments_visible( id ).map( id => this.Comment( id ) )
 		}
 
 		@ $mol_mem_key
-		comments_all( id : number ) : readonly number[] {
-			if( id === 0 ) return this.comments_data().threads
+		comments_all( id : string ) : readonly string[] {
+			if( id === '' ) return this.comments_data().threads
 			return this.comments_data().comments[ id ].children
 		}
 
 		@ $mol_mem_key
-		comments_visible( id : number ) : readonly number[] {
+		comments_visible( id : string ) : readonly string[] {
 
 			if( this.comment_expanded( id ) ) {
 				return this.comments_all( id )
@@ -127,22 +126,22 @@ namespace $.$$ {
 		}
 
 		@ $mol_mem_key
-		comment_expanded( id : number , next? : boolean ) : boolean {
+		comment_expanded( id : string , next? : boolean ) : boolean {
 			if( next !== undefined ) return next
 			return true
 		}
 
 		@ $mol_mem_key
-		comment_expandable( id : number ) : boolean {
+		comment_expandable( id : string ) : boolean {
 			return this.comments_all( id ).length > 0
 		}
 
 		root_comments() {
-			return this.comments( 0 )
+			return this.comments( '' )
 		}
 
 		search_focus( event : Event ) {
-			this.Search().Suggest().Query().focused( true )
+			this.Search().Query().focused( true )
 			event.preventDefault()
 		}
 
