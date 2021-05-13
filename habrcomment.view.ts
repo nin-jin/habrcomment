@@ -142,7 +142,7 @@ namespace $.$$ {
 		}
 
 		search_focus( event : Event ) {
-			this.Search().Suggest().Filter().focused( true )
+			this.Search().Suggest().Query().focused( true )
 			event.preventDefault()
 		}
 
