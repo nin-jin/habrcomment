@@ -842,7 +842,7 @@ declare namespace $ {
         justifyContent?: 'start' | 'end' | 'flex-start' | 'flex-end' | 'left' | 'right' | 'space-between' | 'space-around' | 'space-evenly' | 'normal' | 'stretch' | 'center' | Common;
         background?: 'none' | {
             color?: Color | Common;
-            image?: readonly (readonly [$mol_style_func<'url'>])[];
+            image?: readonly (readonly [$mol_style_func<'url'>])[] | 'none' | Common;
             repeat?: Repeat | [Repeat, Repeat] | Common;
             position?: 'left' | 'right' | 'top' | 'bottom' | 'center';
             size?: (BG_size | [BG_size, BG_size])[];
@@ -1733,7 +1733,7 @@ declare namespace $.$$ {
         event_click(event?: Event): void;
         file_name(): string;
         minimal_height(): number;
-        target(): "_self" | "_blank";
+        target(): '_self' | '_blank' | '_top' | '_parent';
     }
 }
 
@@ -2364,6 +2364,7 @@ declare namespace $ {
         plugins(): readonly any[];
         index(val?: any): any;
         Backward(): $$.$mol_hotkey;
+        escape(val?: any): any;
         Forward(): $$.$mol_hotkey;
     }
 }
