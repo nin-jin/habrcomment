@@ -51,12 +51,14 @@ namespace $.$$ {
 	export class $my_habrcomment extends $.$my_habrcomment {
 
 		article_id() {
-			return Int( Number( this.$.$mol_state_arg.value( 'article' ) ) )
+			return 423889
+			// return Int( Number( this.$.$mol_state_arg.value( 'article' ) ) )
 		}
 
 		@ $mol_mem
 		article_data() {
-			const uri = `https://m.habr.com/kek/v2/articles/${ this.article_id() }`
+			// const uri = `https://m.habr.com/kek/v2/articles/${ this.article_id() }`
+			const uri = `my/habrcomment/data/article.json`
 			const data = Article( this.$.$mol_fetch.json( uri ) )
 			return data
 		}
@@ -75,7 +77,8 @@ namespace $.$$ {
 
 		@ $mol_mem
 		comments_data() {
-			const uri = `https://m.habr.com/kek/v2/articles/${ this.article_id() }/comments/`
+			// const uri = `https://m.habr.com/kek/v2/articles/${ this.article_id() }/comments/`
+			const uri = `my/habrcomment/data/comments.json`
 			const data = Comments_response( this.$.$mol_fetch.json( uri ) )
 			return data
 		}

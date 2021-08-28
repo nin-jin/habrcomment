@@ -1,1 +1,3 @@
 include \/mol/offline/install
+deploy \/my/habrcomment/data/article.json
+deploy \/my/habrcomment/data/comments.json
