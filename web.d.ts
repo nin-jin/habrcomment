@@ -115,7 +115,6 @@ declare namespace $ {
         [$mol_ambient_ref]: typeof $$;
         get $(): $;
         set $(next: $);
-        constructor(init?: (obj: any) => void);
         static create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
         static [Symbol.toPrimitive](): any;
         static toString(): any;
@@ -215,7 +214,13 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_log3_web_make<Close>(level: keyof Console, color: string): (this: $, event: $mol_log3_event<{}>) => () => void;
+    type $mol_type_keys_extract<Input, Upper> = {
+        [Field in keyof Input]: unknown extends Input[Field] ? never : Input[Field] extends never ? never : Input[Field] extends Upper ? Field : never;
+    }[keyof Input];
+}
+
+declare namespace $ {
+    function $mol_log3_web_make(level: $mol_type_keys_extract<Console, Function>, color: string): (this: $, event: $mol_log3_event<{}>) => () => void;
 }
 
 declare namespace $ {
@@ -497,7 +502,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_dom_render_children(el: Element, childNodes: NodeList | Array<Node | string | null>): void;
+    function $mol_dom_render_children(el: Element | DocumentFragment, childNodes: NodeList | Array<Node | string | null>): void;
 }
 
 declare namespace $ {
@@ -519,12 +524,6 @@ declare namespace $ {
 
 declare namespace $ {
     function $mol_deprecated(message: string): <Method extends (this: Host, ...args: readonly any[]) => any, Host extends { [key in Field]: Method; }, Field extends keyof Host>(host: Host, field: Field, descr: TypedPropertyDescriptor<Method>) => void;
-}
-
-declare namespace $ {
-    type $mol_type_keys_extract<Input, Upper> = {
-        [Field in keyof Input]: unknown extends Input[Field] ? never : Input[Field] extends never ? never : Input[Field] extends Upper ? Field : never;
-    }[keyof Input];
 }
 
 declare namespace $ {
@@ -1449,8 +1448,8 @@ declare namespace $ {
         static end: $mol_regexp<{}>;
         static or: $mol_regexp<{}>;
         static line_end: $mol_regexp<{
-            readonly mac_end: string;
             readonly win_end: string;
+            readonly mac_end: string;
         }>;
     }
     export {};
@@ -1535,7 +1534,7 @@ declare namespace $.$$ {
         event_click(event?: Event): void;
         file_name(): string;
         minimal_height(): number;
-        target(): '_self' | '_blank' | '_top' | '_parent';
+        target(): '_self' | '_blank' | '_top' | '_parent' | string;
     }
 }
 
@@ -1811,9 +1810,6 @@ declare namespace $ {
         Lights_icon(): $mol_icon_brightness_6;
         lights(val?: any): boolean;
     }
-}
-
-declare namespace $ {
 }
 
 declare namespace $.$$ {
@@ -2110,12 +2106,18 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $mol_icon_cross extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
     class $mol_search extends $mol_pop {
         query(val?: any): string;
         suggests(): readonly string[];
         plugins(): readonly $mol_plugin[];
         showed(val?: any): boolean;
-        Anchor(): $$.$mol_string;
+        Anchor(): $mol_view;
         bubble_content(): readonly $mol_view_content[];
         Suggest(id: any): $mol_button_minor;
         clear(val?: any): any;
@@ -2128,6 +2130,9 @@ declare namespace $ {
         submit(event?: any): any;
         enabled(): boolean;
         Query(): $$.$mol_string;
+        Clear_icon(): $mol_icon_cross;
+        Clear(): $mol_button_minor;
+        anchor_content(): readonly any[];
         menu_items(): readonly $mol_view[];
         Menu(): $$.$mol_list;
         suggest_select(id: any, event?: any): any;
@@ -2142,6 +2147,7 @@ declare namespace $ {
 
 declare namespace $.$$ {
     class $mol_search extends $.$mol_search {
+        anchor_content(): ($mol_button_minor | $mol_string)[];
         suggests_showed(next?: boolean): boolean;
         suggest_selected(next?: string): void;
         nav_components(): ($mol_button_minor | $mol_string)[];
@@ -2209,7 +2215,7 @@ declare namespace $.$$ {
     class $mol_search_jumper extends $.$mol_search_jumper {
         results(): $mol_view[][];
         index(next?: number): number;
-        sub(): ($mol_string | $mol_paginator)[];
+        sub(): ($mol_button_minor | $mol_string | $mol_paginator)[];
     }
 }
 
