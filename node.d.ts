@@ -1635,6 +1635,7 @@ declare namespace $.$$ {
 
 declare namespace $ {
     class $my_habrcomment_comment extends $mol_list {
+        minimal_width(): number;
         time(): $mol_time_moment;
         expandable(): boolean;
         rows(): readonly any[];

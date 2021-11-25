@@ -216,6 +216,7 @@ $mol_html_view_heading $mol_paragraph
 		mol_html_view_heading <= level 1
 
 $my_habrcomment_comment $mol_list
+	minimal_width 300
 	time $mol_time_moment
 	expandable false
 	rows /

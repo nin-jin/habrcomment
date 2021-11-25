@@ -5956,6 +5956,9 @@ var $;
 var $;
 (function ($) {
     class $my_habrcomment_comment extends $.$mol_list {
+        minimal_width() {
+            return 300;
+        }
         time() {
             const obj = new this.$.$mol_time_moment();
             return obj;
