@@ -406,6 +406,9 @@ var $;
         static hsla(hue, saturation, lightness, alpha) {
             return new $mol_style_func('hsla', [hue, per(saturation), per(lightness), alpha]);
         }
+        static clamp(min, mid, max) {
+            return new $mol_style_func('clamp', [min, mid, max]);
+        }
         static rgba(red, green, blue, alpha) {
             return new $mol_style_func('rgba', [red, green, blue, alpha]);
         }
@@ -597,91 +600,125 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    const cache = new WeakMap();
-    $.$mol_conform_stack = [];
-    function $mol_conform(target, source) {
-        if (Object.is(target, source))
-            return source;
-        if (!target || typeof target !== 'object')
-            return target;
-        if (!source || typeof source !== 'object')
-            return target;
-        if (target instanceof Error)
-            return target;
-        if (source instanceof Error)
-            return target;
-        if (target['constructor'] !== source['constructor'])
-            return target;
-        if (cache.get(target))
-            return target;
-        cache.set(target, true);
-        const conform = $.$mol_conform_handlers.get(target['constructor']);
-        if (!conform)
-            return target;
-        if ($.$mol_conform_stack.indexOf(target) !== -1)
-            return target;
-        $.$mol_conform_stack.push(target);
+    let cache = new WeakMap();
+    function $mol_compare_deep(left, right) {
+        if (Object.is(left, right))
+            return true;
+        if (left === null)
+            return false;
+        if (right === null)
+            return false;
+        if (typeof left !== 'object')
+            return false;
+        if (typeof right !== 'object')
+            return false;
+        const left_proto = Reflect.getPrototypeOf(left);
+        const right_proto = Reflect.getPrototypeOf(right);
+        if (left_proto !== right_proto)
+            return false;
+        if (left instanceof Boolean)
+            return Object.is(left.valueOf(), right['valueOf']());
+        if (left instanceof Number)
+            return Object.is(left.valueOf(), right['valueOf']());
+        if (left instanceof String)
+            return Object.is(left.valueOf(), right['valueOf']());
+        if (left instanceof Date)
+            return Object.is(left.valueOf(), right['valueOf']());
+        if (left instanceof RegExp)
+            return left.source === right['source'] && left.flags === right['flags'];
+        let left_cache = cache.get(left);
+        if (left_cache) {
+            const right_cache = left_cache.get(right);
+            if (typeof right_cache === 'boolean')
+                return right_cache;
+        }
+        else {
+            left_cache = new WeakMap([[right, true]]);
+            cache.set(left, left_cache);
+        }
+        let result;
         try {
-            return conform(target, source);
+            if (left_proto && !Reflect.getPrototypeOf(left_proto))
+                result = compare_pojo(left, right);
+            else if (Array.isArray(left))
+                result = compare_array(left, right);
+            else if (left instanceof Set)
+                result = compare_set(left, right);
+            else if (left instanceof Map)
+                result = compare_map(left, right);
+            else if (ArrayBuffer.isView(left))
+                result = compare_buffer(left, right);
+            else if (Symbol.toPrimitive in left)
+                result = compare_primitive(left, right);
+            else
+                result = false;
         }
         finally {
-            $.$mol_conform_stack.pop();
+            left_cache.set(right, result);
         }
+        return result;
     }
-    $.$mol_conform = $mol_conform;
-    $.$mol_conform_handlers = new WeakMap();
-    function $mol_conform_handler(cl, handler) {
-        $.$mol_conform_handlers.set(cl, handler);
-    }
-    $.$mol_conform_handler = $mol_conform_handler;
-    function $mol_conform_array(target, source) {
-        if (source.length !== target.length)
-            return target;
-        for (let i = 0; i < target.length; ++i) {
-            if (!Object.is(source[i], target[i]))
-                return target;
+    $.$mol_compare_deep = $mol_compare_deep;
+    function compare_array(left, right) {
+        const len = left.length;
+        if (len !== right.length)
+            return false;
+        for (let i = 0; i < len; ++i) {
+            if (!$mol_compare_deep(left[i], right[i]))
+                return false;
         }
-        return source;
+        return true;
     }
-    $.$mol_conform_array = $mol_conform_array;
-    $mol_conform_handler(Array, $mol_conform_array);
-    $mol_conform_handler(Uint8Array, $mol_conform_array);
-    $mol_conform_handler(Uint16Array, $mol_conform_array);
-    $mol_conform_handler(Uint32Array, $mol_conform_array);
-    $mol_conform_handler(({})['constructor'], (target, source) => {
-        let count = 0;
-        let equal = true;
-        for (let key in target) {
-            const conformed = $mol_conform(target[key], source[key]);
-            if (conformed !== target[key]) {
-                try {
-                    target[key] = conformed;
-                }
-                catch (error) { }
-                if (!Object.is(conformed, target[key]))
-                    equal = false;
-            }
-            if (!Object.is(conformed, source[key]))
-                equal = false;
-            ++count;
+    function compare_buffer(left, right) {
+        const len = left.byteLength;
+        if (len !== right.byteLength)
+            return false;
+        for (let i = 0; i < len; ++i) {
+            if (left[i] !== right[i])
+                return false;
         }
-        for (let key in source)
-            if (--count < 0)
+        return true;
+    }
+    function compare_iterator(left, right, compare) {
+        while (true) {
+            const left_next = left.next();
+            const right_next = right.next();
+            if (left_next.done !== right_next.done)
+                return false;
+            if (left_next.done)
                 break;
-        return (equal && count === 0) ? source : target;
-    });
-    $mol_conform_handler(Date, (target, source) => {
-        if (target.getTime() === source.getTime())
-            return source;
-        return target;
-    });
-    $mol_conform_handler(RegExp, (target, source) => {
-        if (target.toString() === source.toString())
-            return source;
-        return target;
-    });
+            if (!compare(left_next.value, right_next.value))
+                return false;
+        }
+        return true;
+    }
+    function compare_set(left, right) {
+        if (left.size !== right.size)
+            return false;
+        return compare_iterator(left.values(), right.values(), $mol_compare_deep);
+    }
+    function compare_map(left, right) {
+        if (left.size !== right.size)
+            return false;
+        return compare_iterator(left.keys(), right.keys(), Object.is)
+            && compare_iterator(left.values(), right.values(), $mol_compare_deep);
+    }
+    function compare_pojo(left, right) {
+        const left_keys = Object.getOwnPropertyNames(left);
+        const right_keys = Object.getOwnPropertyNames(right);
+        if (left_keys.length !== right_keys.length)
+            return false;
+        for (let key of left_keys) {
+            if (!$mol_compare_deep(left[key], Reflect.get(right, key)))
+                return false;
+        }
+        return true;
+    }
+    function compare_primitive(left, right) {
+        return Object.is(left[Symbol.toPrimitive]('default'), right[Symbol.toPrimitive]('default'));
+    }
 })($ || ($ = {}));
-//conform.js.map
+//deep.js.map
 ;
 "use strict";
 var $;
@@ -1008,8 +1045,7 @@ var $;
             }
         }
         push(value) {
-            value = this.$.$mol_conform(value, this.value);
-            if (this.error !== null || !Object.is(this.value, value)) {
+            if (this.error !== null || !$.$mol_compare_deep(this.value, value)) {
                 if ($mol_fiber.logs)
                     this.$.$mol_log3_done({
                         place: this,
@@ -2468,7 +2504,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("mol/gap/gap.css", ":root {\n\t--mol_gap_block: .75rem;\n\t--mol_gap_text: .5rem .75rem;\n\t--mol_gap_round: .25rem;\n}\n");
+    $.$mol_style_attach("mol/gap/gap.css", ":root {\n\t--mol_gap_block: .75rem;\n\t--mol_gap_text: .5rem .75rem;\n\t--mol_gap_round: .25rem;\n\t--mol_gap_space: .25rem;\n\t--mol_gap_blur: .5rem;\n}\n");
 })($ || ($ = {}));
 //gap.css.js.map
 ;
@@ -2480,6 +2516,8 @@ var $;
         block: vary('--mol_gap_block'),
         text: vary('--mol_gap_text'),
         round: vary('--mol_gap_round'),
+        space: vary('--mol_gap_space'),
+        blur: vary('--mol_gap_blur'),
     };
 })($ || ($ = {}));
 //gap.js.map
@@ -3306,6 +3344,9 @@ var $;
         toString(pattern = 'P#Y#M#DT#h#m#s') {
             return super.toString(pattern);
         }
+        [Symbol.toPrimitive](mode) {
+            return mode === 'number' ? this.valueOf() : this.toString();
+        }
         static patterns = {
             '#Y': (duration) => {
                 if (!duration.year)
@@ -3501,6 +3542,9 @@ var $;
         toJSON() { return this.toString(); }
         toString(pattern = 'YYYY-MM-DDThh:mm:ss.sssZ') {
             return super.toString(pattern);
+        }
+        [Symbol.toPrimitive](mode) {
+            return mode === 'number' ? this.valueOf() : this.toString();
         }
         static patterns = {
             'YYYY': (moment) => {
@@ -4038,7 +4082,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("mol/button/typed/typed.view.css", "[mol_button_typed] {\n\tdisplay: inline-block;\n\talign-content: center;\n\talign-items: center;\n\tvertical-align: middle;\n\ttext-align: center;\n\tpadding: var(--mol_gap_text);\n\tborder-radius: var(--mol_gap_round);\n}\n\n[mol_button_typed][disabled] {\n\tcolor: var(--mol_theme_text);\n\tpointer-events: none;\n}\n\n[mol_button_typed]:hover ,\n[mol_button_typed]:focus {\n\tcursor: pointer;\n\tbackground-color: var(--mol_theme_hover);\n}\n");
+    $.$mol_style_attach("mol/button/typed/typed.view.css", "[mol_button_typed] {\n\talign-content: center;\n\talign-items: center;\n\tpadding: var(--mol_gap_text);\n\tborder-radius: var(--mol_gap_round);\n\tgap: var(--mol_gap_space);\n}\n\n[mol_button_typed][disabled] {\n\tcolor: var(--mol_theme_text);\n\tpointer-events: none;\n}\n\n[mol_button_typed]:hover ,\n[mol_button_typed]:focus {\n\tcursor: pointer;\n\tbackground-color: var(--mol_theme_hover);\n}\n");
 })($ || ($ = {}));
 //typed.view.css.js.map
 ;
@@ -4342,7 +4386,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("mol/icon/icon.view.css", "[mol_icon] {\n\tfill: currentColor;\n\tstroke: none;\n\twidth: 1em;\n\theight: 1em;\n\tflex: 0 0 auto;\n\tvertical-align: top;\n\tmargin: .25em 0;\n\tdisplay: inline-block;\n}\n");
+    $.$mol_style_attach("mol/icon/icon.view.css", "[mol_icon] {\n\tfill: currentColor;\n\tstroke: none;\n\twidth: 1em;\n\theight: 1em;\n\tflex: 0 0 auto;\n\tvertical-align: top;\n\tmargin: .25em 0;\n\tdisplay: inline-block;\n\tfilter: drop-shadow(0px 1px 1px var(--mol_theme_back));\n}\n");
 })($ || ($ = {}));
 //icon.view.css.js.map
 ;
@@ -4881,7 +4925,10 @@ var $;
                 return chunks;
             }
             strings() {
-                const variants = { ...this.needle().split(/\s+/g).filter(Boolean) };
+                const options = this.needle().split(/\s+/g).filter(Boolean);
+                if (!options.length)
+                    return [this.haystack()];
+                const variants = { ...options };
                 const regexp = $.$mol_regexp.from({ needle: variants }, { ignoreCase: true });
                 return this.haystack().split(regexp);
             }
@@ -4974,12 +5021,22 @@ var $;
                 next = $.$mol_dom_context.location.href;
             }
             else if (!/^about:srcdoc/.test(next)) {
-                history.replaceState(history.state, $.$mol_dom_context.document.title, next);
+                new $.$mol_after_frame(() => {
+                    const next = this.href();
+                    const prev = $.$mol_dom_context.location.href;
+                    if (next === prev)
+                        return;
+                    const history = $.$mol_dom_context.history;
+                    history.replaceState(history.state, $.$mol_dom_context.document.title, next);
+                });
             }
             if ($.$mol_dom_context.parent !== $.$mol_dom_context.self) {
                 $.$mol_dom_context.parent.postMessage(['hashchange', next], '*');
             }
             return next;
+        }
+        static href_normal() {
+            return this.link({});
         }
         static dict(next) {
             var href = this.href(next && this.make_link(next)).split(/#!?/)[1] || '';
@@ -5053,6 +5110,9 @@ var $;
     ], $mol_state_arg, "href", null);
     __decorate([
         $.$mol_mem
+    ], $mol_state_arg, "href_normal", null);
+    __decorate([
+        $.$mol_mem
     ], $mol_state_arg, "dict", null);
     __decorate([
         $.$mol_mem_key
@@ -5081,6 +5141,7 @@ var $;
         boxSizing: 'border-box',
         position: 'relative',
         minWidth: rem(2.5),
+        gap: $.$mol_gap.space,
         border: {
             radius: $.$mol_gap.round,
         },
@@ -5134,7 +5195,7 @@ var $;
                 return new URL(this.uri(), base);
             }
             current() {
-                const base = this.$.$mol_state_arg.href();
+                const base = this.$.$mol_state_arg.href_normal();
                 const target = this.uri_native().toString();
                 if (base === target)
                     return true;
@@ -5228,7 +5289,7 @@ var $;
     (function ($$) {
         class $mol_link_iconed extends $.$mol_link_iconed {
             icon() {
-                return `https://api.faviconkit.com/${this.host()}/16`;
+                return `https://favicon.yandex.net/favicon/${this.host()}?color=0,0,0,0&size=32&stub=1`;
             }
             host() {
                 const base = this.$.$mol_state_arg.href();
@@ -7433,7 +7494,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("mol/search/search.view.css", "[mol_search] {\n\talign-self: flex-start;\n\tflex: auto;\n}\n\n[mol_search_anchor] {\n\tflex: 1 1 auto;\n}\n\n[mol_search_query] {\n\tflex-grow: 1;\n}\n\n[mol_search_menu] {\n\tmin-height: .75rem;\n\tdisplay: flex;\n}\n\n[mol_search_suggest] {\n\ttext-align: left;\n}\n");
+    $.$mol_style_attach("mol/search/search.view.css", "[mol_search] {\n\talign-self: flex-start;\n\tflex: auto;\n}\n\n[mol_search_anchor] {\n\tflex: 1 1 auto;\n}\n\n[mol_search_query] {\n\tflex-grow: 1;\n}\n\n[mol_search_menu] {\n\tmin-height: .75rem;\n\tdisplay: flex;\n}\n\n[mol_search_suggest] {\n\ttext-align: left;\n}\n\n[mol_search_suggest_label_high] {\n\tcolor: var(--mol_theme_shade);\n\ttext-shadow: none;\n}\n");
 })($ || ($ = {}));
 //search.view.css.js.map
 ;
@@ -7493,7 +7554,8 @@ var $;
             }
             suggest_select(id, event) {
                 this.query(id);
-                this.Query().focused(false);
+                this.Query().selection([id.length, id.length]);
+                this.Query().focused(true);
             }
             clear(event) {
                 this.query('');
@@ -7508,6 +7570,9 @@ var $;
         __decorate([
             $.$mol_mem
         ], $mol_search.prototype, "nav_focused", null);
+        __decorate([
+            $.$mol_mem
+        ], $mol_search.prototype, "menu_items", null);
         $$.$mol_search = $mol_search;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));

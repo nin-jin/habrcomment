@@ -268,23 +268,16 @@ var $;
             $.$mol_assert_ok($.$mol_compare_deep(1, 1));
             $.$mol_assert_ok($.$mol_compare_deep(Number.NaN, Number.NaN));
             $.$mol_assert_not($.$mol_compare_deep(1, 2));
-        },
-        'Number'() {
             $.$mol_assert_ok($.$mol_compare_deep(Object(1), Object(1)));
-            $.$mol_assert_ok($.$mol_compare_deep(Object(Number.NaN), Object(Number.NaN)));
             $.$mol_assert_not($.$mol_compare_deep(Object(1), Object(2)));
         },
-        'empty POJOs'() {
+        'POJO'() {
             $.$mol_assert_ok($.$mol_compare_deep({}, {}));
-        },
-        'different POJOs'() {
             $.$mol_assert_not($.$mol_compare_deep({ a: 1 }, { b: 2 }));
-        },
-        'different POJOs with same keys but different values'() {
             $.$mol_assert_not($.$mol_compare_deep({ a: 1 }, { a: 2 }));
-        },
-        'different POJOs with different keys but same values'() {
             $.$mol_assert_not($.$mol_compare_deep({}, { a: undefined }));
+            $.$mol_assert_ok($.$mol_compare_deep({ a: 1, b: 2 }, { b: 2, a: 1 }));
+            $.$mol_assert_ok($.$mol_compare_deep({ a: { b: 1 } }, { a: { b: 1 } }));
         },
         'Array'() {
             $.$mol_assert_ok($.$mol_compare_deep([], []));
@@ -292,17 +285,12 @@ var $;
             $.$mol_assert_not($.$mol_compare_deep([1, 2], [1, 3]));
             $.$mol_assert_not($.$mol_compare_deep([1, 2,], [1, 3, undefined]));
         },
-        'same POJO trees'() {
-            $.$mol_assert_ok($.$mol_compare_deep({ a: { b: 1 } }, { a: { b: 1 } }));
-        },
-        'different classes with same values'() {
-            class Obj {
-                foo = 1;
+        'Non POJO are different'() {
+            class Thing extends Object {
             }
-            const a = new Obj;
-            const b = new class extends Obj {
-            };
-            $.$mol_assert_not($.$mol_compare_deep(a, b));
+            $.$mol_assert_not($.$mol_compare_deep(new Thing, new Thing));
+            $.$mol_assert_not($.$mol_compare_deep(() => 1, () => 1));
+            $.$mol_assert_not($.$mol_compare_deep(new RangeError('Test error'), new RangeError('Test error')));
         },
         'same POJOs with cyclic reference'() {
             const a = { foo: {} };
@@ -310,41 +298,6 @@ var $;
             const b = { foo: {} };
             b['self'] = b;
             $.$mol_assert_ok($.$mol_compare_deep(a, b));
-        },
-        'empty Element'() {
-            $.$mol_assert_ok($.$mol_compare_deep($.$mol_jsx("div", null), $.$mol_jsx("div", null)));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", null), $.$mol_jsx("span", null)));
-        },
-        'Element with attributes'() {
-            $.$mol_assert_ok($.$mol_compare_deep($.$mol_jsx("div", { dir: "rtl" }), $.$mol_jsx("div", { dir: "rtl" })));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", { dir: "rtl" }), $.$mol_jsx("div", null)));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", { dir: "rtl" }), $.$mol_jsx("div", { dir: "ltr" })));
-        },
-        'Element with styles'() {
-            $.$mol_assert_ok($.$mol_compare_deep($.$mol_jsx("div", { style: { color: 'red' } }), $.$mol_jsx("div", { style: { color: 'red' } })));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", { style: { color: 'red' } }), $.$mol_jsx("div", { style: {} })));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", { style: { color: 'red' } }), $.$mol_jsx("div", { style: { color: 'blue' } })));
-        },
-        'Element with content'() {
-            $.$mol_assert_ok($.$mol_compare_deep($.$mol_jsx("div", null,
-                "foo",
-                $.$mol_jsx("br", null)), $.$mol_jsx("div", null,
-                "foo",
-                $.$mol_jsx("br", null))));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", null,
-                "foo",
-                $.$mol_jsx("br", null)), $.$mol_jsx("div", null,
-                "bar",
-                $.$mol_jsx("br", null))));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", null,
-                "foo",
-                $.$mol_jsx("br", null)), $.$mol_jsx("div", null,
-                "foo",
-                $.$mol_jsx("hr", null))));
-        },
-        'Element with handlers'() {
-            $.$mol_assert_ok($.$mol_compare_deep($.$mol_jsx("div", { onclick: () => 1 }), $.$mol_jsx("div", { onclick: () => 1 })));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", { onclick: () => 1 }), $.$mol_jsx("div", { onclick: () => 2 })));
         },
         'Date'() {
             $.$mol_assert_ok($.$mol_compare_deep(new Date(12345), new Date(12345)));
@@ -357,8 +310,9 @@ var $;
         },
         'Map'() {
             $.$mol_assert_ok($.$mol_compare_deep(new Map, new Map));
-            $.$mol_assert_ok($.$mol_compare_deep(new Map([[[1], [2]]]), new Map([[[1], [2]]])));
+            $.$mol_assert_ok($.$mol_compare_deep(new Map([[1, [2]]]), new Map([[1, [2]]])));
             $.$mol_assert_not($.$mol_compare_deep(new Map([[1, 2]]), new Map([[1, 3]])));
+            $.$mol_assert_not($.$mol_compare_deep(new Map([[[1], 2]]), new Map([[[1], 2]])));
         },
         'Set'() {
             $.$mol_assert_ok($.$mol_compare_deep(new Set, new Set));
@@ -370,106 +324,24 @@ var $;
             $.$mol_assert_ok($.$mol_compare_deep(new Uint8Array([0]), new Uint8Array([0])));
             $.$mol_assert_not($.$mol_compare_deep(new Uint8Array([0]), new Uint8Array([1])));
         },
+        'Custom comparator'() {
+            class User {
+                name;
+                rand;
+                constructor(name, rand = Math.random()) {
+                    this.name = name;
+                    this.rand = rand;
+                }
+                [Symbol.toPrimitive](mode) {
+                    return this.name;
+                }
+            }
+            $.$mol_assert_ok($.$mol_compare_deep(new User('Jin'), new User('Jin')));
+            $.$mol_assert_not($.$mol_compare_deep(new User('Jin'), new User('John')));
+        },
     });
 })($ || ($ = {}));
 //deep.test.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    const a_stack = [];
-    const b_stack = [];
-    let cache = null;
-    function $mol_compare_deep(a, b) {
-        if (Object.is(a, b))
-            return true;
-        const a_type = typeof a;
-        const b_type = typeof b;
-        if (a_type !== b_type)
-            return false;
-        if (a_type === 'function')
-            return a['toString']() === b['toString']();
-        if (a_type !== 'object')
-            return false;
-        if (!a || !b)
-            return false;
-        if (a instanceof Error)
-            return false;
-        if (a['constructor'] !== b['constructor'])
-            return false;
-        if (a instanceof RegExp)
-            return a.toString() === b['toString']();
-        const ref = a_stack.indexOf(a);
-        if (ref >= 0) {
-            return Object.is(b_stack[ref], b);
-        }
-        if (!cache)
-            cache = new WeakMap;
-        let a_cache = cache.get(a);
-        if (a_cache) {
-            const b_cache = a_cache.get(b);
-            if (typeof b_cache === 'boolean')
-                return b_cache;
-        }
-        else {
-            a_cache = new WeakMap();
-            cache.set(a, a_cache);
-        }
-        a_stack.push(a);
-        b_stack.push(b);
-        let result;
-        try {
-            if (Symbol.iterator in a) {
-                const a_iter = a[Symbol.iterator]();
-                const b_iter = b[Symbol.iterator]();
-                while (true) {
-                    const a_next = a_iter.next();
-                    const b_next = b_iter.next();
-                    if (a_next.done !== b_next.done)
-                        return result = false;
-                    if (a_next.done)
-                        break;
-                    if (!$mol_compare_deep(a_next.value, b_next.value))
-                        return result = false;
-                }
-                return result = true;
-            }
-            let count = 0;
-            for (let key in a) {
-                try {
-                    if (!$mol_compare_deep(a[key], b[key]))
-                        return result = false;
-                }
-                catch (error) {
-                    $.$mol_fail_hidden(new $.$mol_error_mix(`Failed ${JSON.stringify(key)} fields comparison of ${a} and ${b}`, error));
-                }
-                ++count;
-            }
-            for (let key in b) {
-                --count;
-                if (count < 0)
-                    return result = false;
-            }
-            if (a instanceof Number || a instanceof String || a instanceof Symbol || a instanceof Boolean || a instanceof Date) {
-                if (!Object.is(a['valueOf'](), b['valueOf']()))
-                    return result = false;
-            }
-            return result = true;
-        }
-        finally {
-            a_stack.pop();
-            b_stack.pop();
-            if (a_stack.length === 0) {
-                cache = null;
-            }
-            else {
-                a_cache.set(b, result);
-            }
-        }
-    }
-    $.$mol_compare_deep = $mol_compare_deep;
-})($ || ($ = {}));
-//deep.js.map
 ;
 "use strict";
 var $;
@@ -868,129 +740,6 @@ var $;
     });
 })($ || ($ = {}));
 //frame.test.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_test({
-        'return source when same object'() {
-            const target = {};
-            $.$mol_assert_equal($.$mol_conform(target, target), target);
-        },
-        'return target when some is not object'() {
-            const obj = { a: 1 };
-            $.$mol_assert_equal($.$mol_conform(true, obj), true);
-            $.$mol_assert_equal($.$mol_conform(obj, true), obj);
-        },
-        'return target when some is null'() {
-            const obj = { a: 1 };
-            $.$mol_assert_equal($.$mol_conform(null, obj), null);
-            $.$mol_assert_equal($.$mol_conform(obj, null), obj);
-        },
-        'return target when some is undefined'() {
-            const obj = { a: 1 };
-            $.$mol_assert_equal($.$mol_conform(undefined, obj), undefined);
-            $.$mol_assert_equal($.$mol_conform(obj, undefined), obj);
-        },
-        'return target when different keys count'() {
-            const target = [1, 2, 3];
-            const source = [1, 2, 3, undefined];
-            const result = $.$mol_conform(target, source);
-            $.$mol_assert_equal(result, target);
-            $.$mol_assert_equal(result.join(','), '1,2,3');
-        },
-        'return source when array values are strong equal'() {
-            const source = [1, 2, 3];
-            $.$mol_assert_equal($.$mol_conform([1, 2, 3], source), source);
-        },
-        'return source when object values are strong equal'() {
-            const source = { a: 1, b: 2 };
-            $.$mol_assert_equal($.$mol_conform({ a: 1, b: 2 }, source), source);
-        },
-        'return target when some values are not equal'() {
-            const target = [1, 2, 3];
-            const source = [1, 2, 5];
-            const result = $.$mol_conform(target, source);
-            $.$mol_assert_equal(result, target);
-            $.$mol_assert_equal(result.join(','), '1,2,3');
-        },
-        'return source when values are deep equal'() {
-            const source = { foo: { bar: 1 } };
-            $.$mol_assert_equal($.$mol_conform({ foo: { bar: 1 } }, source), source);
-        },
-        'return target with equal values from source and not equal from target'() {
-            const source = { foo: { xxx: 1 }, bar: { xxx: 2 } };
-            const target = { foo: { xxx: 1 }, bar: { xxx: 3 } };
-            const result = $.$mol_conform(target, source);
-            $.$mol_assert_equal(result, target);
-            $.$mol_assert_equal(result.foo, source.foo);
-            $.$mol_assert_equal(result.bar, target.bar);
-        },
-        'return target when equal but with different class'() {
-            const target = { '0': 1 };
-            $.$mol_assert_equal($.$mol_conform(target, [1]), target);
-        },
-        'return target when conformer for class is not defined'() {
-            const Obj = class {
-            };
-            const source = new Obj;
-            const target = new Obj;
-            const result = $.$mol_conform(target, source);
-            $.$mol_assert_equal(result, target);
-        },
-        'return target when has cyclic reference'() {
-            const source = { foo: {} };
-            source['self'] = source;
-            const target = { foo: {} };
-            target['self'] = target;
-            const result = $.$mol_conform(target, source);
-            $.$mol_assert_equal(result, target);
-            $.$mol_assert_equal(result['self'], target);
-            $.$mol_assert_equal(result.foo, source.foo);
-        },
-        'return source when equal dates'() {
-            const source = new Date(12345);
-            const target = new Date(12345);
-            const result = $.$mol_conform(target, source);
-            $.$mol_assert_equal(result, source);
-        },
-        'return source when equal regular expressions'() {
-            const source = /\x22/mig;
-            const target = /\x22/mig;
-            const result = $.$mol_conform(target, source);
-            $.$mol_assert_equal(result, source);
-        },
-        'return cached value if already conformed'() {
-            const source = { foo: { xxx: 1 }, bar: { xxx: 3 } };
-            const target = { foo: { xxx: 2 }, bar: { xxx: 3 } };
-            const result = $.$mol_conform(target, source);
-            target.foo.xxx = 1;
-            $.$mol_assert_equal($.$mol_conform(target.foo, source.foo), target.foo);
-        },
-        'skip readlony fields'() {
-            const source = { foo: {}, bar: {} };
-            const target = { foo: {}, bar: {} };
-            Object.defineProperty(target, 'bar', { value: {}, writable: false });
-            const result = $.$mol_conform(target, source);
-            $.$mol_assert_equal(result, target);
-            $.$mol_assert_equal(result.foo, source.foo);
-            $.$mol_assert_equal(result.bar, target.bar);
-        },
-        'object with NaN'() {
-            const source = { foo: Number.NaN };
-            const target = { foo: Number.NaN };
-            const result = $.$mol_conform(target, source);
-            $.$mol_assert_equal(result, source);
-        },
-        'array with NaN'() {
-            const source = [Number.NaN];
-            const target = [Number.NaN];
-            const result = $.$mol_conform(target, source);
-            $.$mol_assert_equal(result, source);
-        },
-    });
-})($ || ($ = {}));
-//conform.test.js.map
 ;
 "use strict";
 var $;
@@ -1735,6 +1484,10 @@ var $;
         'format typed'() {
             $.$mol_assert_equal(new $.$mol_time_duration('P1Y2M3DT4h5m6s').toString('P#Y#M#DT#h#m#s'), 'P1Y2M3DT4H5M6S');
         },
+        'comparison'() {
+            const iso = 'P1Y1M1DT1h1m1s';
+            $.$mol_assert_like(new $.$mol_time_duration(iso), new $.$mol_time_duration(iso));
+        },
     });
 })($ || ($ = {}));
 //duration.test.js.map
@@ -1790,7 +1543,11 @@ var $;
         },
         'change offset'() {
             $.$mol_assert_equal(new $.$mol_time_moment('2021-04-10 +03:00').toOffset('Z').toString(), '2021-04-09T21:00:00+00:00');
-        }
+        },
+        'comparison'() {
+            const iso = '2021-01-02T03:04:05.678+09:10';
+            $.$mol_assert_like(new $.$mol_time_moment(iso), new $.$mol_time_moment(iso));
+        },
     });
 })($ || ($ = {}));
 //moment.test.js.map
@@ -2143,6 +1900,53 @@ var $;
     });
 })($ || ($ = {}));
 //regexp.test.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $.$mol_test({
+            'Empty needle'() {
+                const app = new $$.$mol_dimmer;
+                app.needle = () => '  ';
+                app.haystack = () => 'foo  bar';
+                $.$mol_assert_like(app.strings(), ['foo  bar']);
+            },
+            'Empty haystack'() {
+                const app = new $$.$mol_dimmer;
+                app.needle = () => 'foo  bar';
+                app.haystack = () => '';
+                $.$mol_assert_like(app.strings(), ['']);
+            },
+            'Not found'() {
+                const app = new $$.$mol_dimmer;
+                app.needle = () => 'foo';
+                app.haystack = () => ' bar ';
+                $.$mol_assert_like(app.strings(), [' bar ']);
+            },
+            'One found'() {
+                const app = new $$.$mol_dimmer;
+                app.needle = () => 'foo';
+                app.haystack = () => ' barfoo ';
+                $.$mol_assert_like(app.strings(), [' bar', 'foo', ' ']);
+            },
+            'Multiple found'() {
+                const app = new $$.$mol_dimmer;
+                app.needle = () => 'foo';
+                app.haystack = () => ' foobarfoo foo';
+                $.$mol_assert_like(app.strings(), [' ', 'foo', 'bar', 'foo', ' ', 'foo']);
+            },
+            'Fuzzy search'() {
+                const app = new $$.$mol_dimmer;
+                app.needle = () => 'foo bar';
+                app.haystack = () => ' barfoo ';
+                $.$mol_assert_like(app.strings(), [' ', 'bar', '', 'foo', ' ']);
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//dimmer.test.js.map
 ;
 "use strict";
 var $;
@@ -2556,7 +2360,8 @@ var $;
                 }
             }
             const boxify = $.$mol_data_pipe((input) => input.toString(), Box);
-            $.$mol_assert_like(boxify(5), new Box('5'));
+            $.$mol_assert_ok(boxify(5) instanceof Box);
+            $.$mol_assert_like(boxify(5).value, '5');
         },
     });
 })($ || ($ = {}));
