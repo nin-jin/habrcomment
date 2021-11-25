@@ -1,4 +1,5 @@
 $my_habrcomment_comment $mol_list
+	minimal_width 300
 	time $mol_time_moment
 	expandable false
 	rows /
