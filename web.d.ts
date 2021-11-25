@@ -1634,8 +1634,9 @@ declare namespace $ {
         user_name(): string;
         User_name(): $$.$mol_dimmer;
         User_link(): $$.$mol_link;
+        id(): string;
         time_string(): string;
-        Time(): $mol_view;
+        Time(): $$.$mol_link;
         head(): readonly any[];
         Head(): $mol_view;
         message(): string;
@@ -1653,7 +1654,7 @@ declare namespace $.$$ {
     class $my_habrcomment_comment extends $.$my_habrcomment_comment {
         user_link(): string;
         time_string(): string;
-        head(): $mol_view[];
+        head(): ($mol_check_expand | $mol_link)[];
     }
 }
 
@@ -2221,7 +2222,7 @@ declare namespace $.$$ {
     class $mol_search_jumper extends $.$mol_search_jumper {
         results(): $mol_view[][];
         index(next?: number): number;
-        sub(): ($mol_button_minor | $mol_string | $mol_paginator)[];
+        anchor_content(): ($mol_button_minor | $mol_string | $mol_paginator)[];
     }
 }
 
@@ -2264,6 +2265,7 @@ declare namespace $ {
         Comments_empty(): $mol_view;
         Comments(): $$.$mol_list;
         Content(): $$.$mol_list;
+        id(id: any): string;
         comment_time(id: any): $mol_time_moment;
         comment_user(id: any): string;
         comment_avatar(id: any): string;
@@ -2447,6 +2449,9 @@ declare namespace $.$$ {
         search_focus(event: Event): void;
         search(next?: string): string;
         image_uri(node: HTMLImageElement): string;
+        auto(): void;
+        go_to_comment(): null;
+        id(id: string): string;
     }
 }
 

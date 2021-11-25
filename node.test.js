@@ -5496,7 +5496,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("mol/link/iconed/iconed.view.css", "[mol_link_iconed] {\n\talign-items: center;\n\tcolor: var(--mol_theme_control);\n\tdisplay: inline;\n\tpadding: var(--mol_gap_text);\n}\n\n[mol_link_iconed_icon] {\n\tbox-shadow: none;\n\theight: 1em;\n\twidth: 1em;\n\tdisplay: inline-block;\n\tmargin: .125rem 0;\n\tvertical-align: text-bottom;\n\tborder-radius: 0;\n\tobject-fit: scale-down;\n}\n\n[mol_theme=\"$mol_theme_dark\"] [mol_link_iconed_icon] {\n\tfilter: invert(1) hue-rotate(180deg);\n}\n");
+    $.$mol_style_attach("mol/link/iconed/iconed.view.css", "[mol_link_iconed] {\n\talign-items: center;\n\tcolor: var(--mol_theme_control);\n\tdisplay: inline-flex;\n\tpadding: var(--mol_gap_text);\n}\n\n[mol_link_iconed_icon] {\n\tbox-shadow: none;\n\theight: 1em;\n\twidth: 1em;\n\tdisplay: inline-block;\n\tmargin: .125rem 0;\n\tvertical-align: text-bottom;\n\tborder-radius: 0;\n\tobject-fit: scale-down;\n}\n\n[mol_theme=\"$mol_theme_dark\"] [mol_link_iconed_icon] {\n\tfilter: invert(1) hue-rotate(180deg);\n}\n");
 })($ || ($ = {}));
 //iconed.view.css.js.map
 ;
@@ -6005,11 +6005,17 @@ var $;
             ];
             return obj;
         }
+        id() {
+            return "";
+        }
         time_string() {
             return "";
         }
         Time() {
-            const obj = new this.$.$mol_view();
+            const obj = new this.$.$mol_link();
+            obj.arg = () => ({
+                comment: this.id()
+            });
             obj.sub = () => [
                 this.time_string()
             ];
@@ -6100,9 +6106,6 @@ var $;
         User_avatar: {
             width: rem(1.5),
             height: rem(1.5),
-        },
-        Time: {
-            margin: [rem(.5), rem(.75)],
         },
         Expand: {
             position: 'absolute',
@@ -8015,7 +8018,7 @@ var $;
                 }
                 return index;
             }
-            sub() {
+            anchor_content() {
                 return [
                     this.Query(),
                     ...(this.query().length > 0) ? [
@@ -8097,6 +8100,7 @@ var $;
         }
         Comment(id) {
             const obj = new this.$.$my_habrcomment_comment();
+            obj.id = () => this.id(id);
             obj.time = () => this.comment_time(id);
             obj.user_name = () => this.comment_user(id);
             obj.user_avatar = () => this.comment_avatar(id);
@@ -8184,6 +8188,9 @@ var $;
                 this.Comments()
             ];
             return obj;
+        }
+        id(id) {
+            return "";
         }
         comment_time(id) {
             const obj = new this.$.$mol_time_moment();
@@ -8828,6 +8835,21 @@ var $;
             image_uri(node) {
                 return node.dataset.src || node.src || 'about:blank';
             }
+            auto() {
+                this.go_to_comment();
+            }
+            go_to_comment() {
+                const id = this.$.$mol_state_arg.value('comment');
+                if (!id)
+                    return null;
+                this.comments_data();
+                const comment = this.Comment(id);
+                new $.$mol_after_work(50, () => this.ensure_visible(comment));
+                return null;
+            }
+            id(id) {
+                return id;
+            }
         }
         __decorate([
             $.$mol_mem
@@ -8850,6 +8872,9 @@ var $;
         __decorate([
             $.$mol_mem_key
         ], $my_habrcomment.prototype, "comment_expandable", null);
+        __decorate([
+            $.$mol_mem
+        ], $my_habrcomment.prototype, "go_to_comment", null);
         $$.$my_habrcomment = $my_habrcomment;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
