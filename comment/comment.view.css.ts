@@ -20,10 +20,6 @@ namespace $ {
 			height : rem(1.5),
 		},
 		
-		Time: {
-			margin : [ rem(.5), rem(.75) ],
-		},
-
 		Expand: {
 			position: 'absolute',
 			margin: { left : rem(-2.25) },

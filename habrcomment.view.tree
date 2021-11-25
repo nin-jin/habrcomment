@@ -24,6 +24,7 @@ $my_habrcomment $mol_page
 				rows <= root_comments /$mol_view
 				Empty <= Comments_empty $mol_view sub / \Без комментариев
 	Comment!id $my_habrcomment_comment
+		id <= id!id \
 		time <= comment_time!id $mol_time_moment
 		user_name <= comment_user!id \
 		user_avatar <= comment_avatar!id \

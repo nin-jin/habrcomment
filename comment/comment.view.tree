@@ -15,7 +15,8 @@ $my_habrcomment_comment $mol_list
 						<= User_name $mol_dimmer
 							needle <= search \
 							haystack <= user_name \ 
-				<= Time $mol_view
+				<= Time $mol_link
+					arg * comment <= id \
 					sub /
 						<= time_string \
 		<= Message $mol_html_view

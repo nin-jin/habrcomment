@@ -155,6 +155,28 @@ namespace $.$$ {
 		image_uri( node : HTMLImageElement ) {
 			return node.dataset.src || node.src || 'about:blank'
 		}
+		
+		auto() {
+			this.go_to_comment()
+		}
+		
+		@ $mol_mem
+		go_to_comment() {
+			
+			const id = this.$.$mol_state_arg.value( 'comment' )
+			if( !id ) return null
+			
+			this.comments_data()
+			
+			const comment = this.Comment( id )
+			new $mol_after_work( 50, ()=> this.ensure_visible( comment ) )
+			
+			return null
+		}
+		
+		id( id: string ) {
+			return id
+		}
 
 	}
 
