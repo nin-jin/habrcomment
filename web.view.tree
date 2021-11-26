@@ -223,7 +223,7 @@ $my_habrcomment_comment $mol_list
 		<= Head $mol_view
 			sub <= head /
 				<= Expand $mol_check_expand
-					hint \Сворачивание ветки
+					hint \Разворачивание ветки
 					checked?val <=> expanded?val true
 				<= User_link $mol_link
 					uri <= user_link \
