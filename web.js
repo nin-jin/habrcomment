@@ -5754,6 +5754,7 @@ var $;
         }
         Expand() {
             const obj = new this.$.$mol_check_expand();
+            obj.hint = () => "Сворачивание ветки";
             obj.checked = (val) => this.expanded(val);
             return obj;
         }
