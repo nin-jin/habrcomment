@@ -260,8 +260,8 @@
     "$mol_after_work"
   ],
   "dependencies": {
-    "jsdom": "*",
     "colorette": "*",
+    "jsdom": "*",
     "chokidar": "*",
     "node-fetch": "*"
   }
