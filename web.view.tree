@@ -146,12 +146,12 @@ $mol_dimmer $mol_paragraph
 	haystack \
 	needle \
 	sub <= parts /$mol_view_content
-	Low!id $mol_paragraph
+	Low* $mol_paragraph
 		sub /
-			<= string!id \
-	High!id $mol_paragraph
+			<= string* \
+	High* $mol_paragraph
 		sub /
-			<= string!id \
+			<= string* \
 
 $mol_link $mol_view
 	dom_name \a
@@ -181,37 +181,37 @@ $mol_link_iconed $mol_link
 $mol_html_view $mol_list
 	html \
 	dom null
-	safe_link!uri \
+	safe_link* \
 	xss_uri \https://en.wikipedia.org/wiki/XSS#
-	Heading!id $mol_html_view_heading
-		level <= heading_level!id 1
-		sub <= content!id /
-	Paragraph!id $mol_paragraph
-		sub <= content!id /
-	List!id $mol_list
-		rows <= content!id /
-	Quote!id $mol_list
-		rows <= content!id /
-	Strong!id $mol_paragraph
-		sub <= content!id /
-	Emphasis!id $mol_paragraph
-		sub <= content!id /
-	Deleted!id $mol_paragraph
-		sub <= content!id /
-	Inserted!id $mol_paragraph
-		sub <= content!id /
-	Code!id $mol_paragraph
-		sub <= content!id /
-	Link!id $mol_link_iconed
-		uri <= link_uri!id \
-		content <= content!id /
-	Image!id $mol_image
-		uri <= image_uri!id \
-	Break!id $mol_paragraph
+	Heading* $mol_html_view_heading
+		level <= heading_level* 1
+		sub <= content* /
+	Paragraph* $mol_paragraph
+		sub <= content* /
+	List* $mol_list
+		rows <= content* /
+	Quote* $mol_list
+		rows <= content* /
+	Strong* $mol_paragraph
+		sub <= content* /
+	Emphasis* $mol_paragraph
+		sub <= content* /
+	Deleted* $mol_paragraph
+		sub <= content* /
+	Inserted* $mol_paragraph
+		sub <= content* /
+	Code* $mol_paragraph
+		sub <= content* /
+	Link* $mol_link_iconed
+		uri <= link_uri* \
+		content <= content* /
+	Image* $mol_image
+		uri <= image_uri* \
+	Break* $mol_paragraph
 		sub /
-	Text!id $mol_dimmer
+	Text* $mol_dimmer
 		needle <= highlight \
-		haystack <= text!id \
+		haystack <= text* \
 
 $mol_html_view_heading $mol_paragraph
 	attr *
@@ -376,11 +376,11 @@ $mol_search $mol_pop
 	bubble_content /$mol_view_content
 		<= Menu $mol_list
 			rows <= menu_items /$mol_view
-	Suggest!id $mol_button_minor
-		click?event <=> suggest_select!id?event null
-		sub <= suggest_content!id /$mol_view_content
-			<= Suggest_label!id $mol_dimmer
-				haystack <= suggest_label!id \
+	Suggest* $mol_button_minor
+		click?event <=> suggest_select*?event null
+		sub <= suggest_content* /$mol_view_content
+			<= Suggest_label* $mol_dimmer
+				haystack <= suggest_label* \
 				needle <= query?val \
 
 $mol_icon_chevron_left $mol_icon path \M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z

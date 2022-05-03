@@ -1564,7 +1564,7 @@ declare namespace $ {
     class $mol_html_view extends $mol_list {
         html(): string;
         dom(): any;
-        safe_link(uri: any): string;
+        safe_link(id: any): string;
         xss_uri(): string;
         Heading(id: any): $mol_html_view_heading;
         Paragraph(id: any): $$.$mol_paragraph;
@@ -1661,7 +1661,7 @@ declare namespace $ {
         head(): readonly any[];
         Head(): $mol_view;
         message(): string;
-        image_uri(node: any): string;
+        image_uri(id: any): string;
         Message(): $$.$mol_html_view;
         replies(): readonly $mol_view[];
         Replies(): $$.$mol_list;
@@ -2286,7 +2286,7 @@ declare namespace $ {
         search(val?: any): string;
         Search(): $$.$mol_search_jumper;
         article_content(): string;
-        image_uri(node: any): string;
+        image_uri(id: any): string;
         Article(): $$.$mol_html_view;
         root_comments(): readonly $mol_view[];
         Comments_empty(): $mol_view;
