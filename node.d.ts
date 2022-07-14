@@ -2184,6 +2184,7 @@ declare namespace $ {
         hint(): string;
         submit(event?: any): any;
         enabled(): boolean;
+        bring(): void;
         Query(): $$.$mol_string;
         Clear_icon(): $mol_icon_cross;
         Clear(): $mol_button_minor;
