@@ -2652,7 +2652,7 @@ var $;
                 kids[index].force_render(path);
             }
         }
-        async ensure_visible(view, align = "start") {
+        ensure_visible(view, align = "start") {
             const path = this.view_find(v => v === view).next().value;
             this.force_render(new Set(path));
             this.dom_final();
@@ -2660,7 +2660,7 @@ var $;
         }
         bring() {
             new $mol_after_frame(() => {
-                this.dom_node().scrollIntoView();
+                this.dom_node().scrollIntoView({ inline: 'start' });
                 this.focused(true);
             });
         }
@@ -4800,7 +4800,7 @@ var $;
             return 7;
         }
         width_limit() {
-            return Infinity;
+            return +Infinity;
         }
         sub() {
             return [
@@ -7448,7 +7448,7 @@ var $;
             return "text";
         }
         length_max() {
-            return Infinity;
+            return +Infinity;
         }
         type(val) {
             if (val !== undefined)
